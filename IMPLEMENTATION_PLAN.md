@@ -58,9 +58,11 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
 ## Phase 3 — Affiliate feed + links + embed
 
-- [ ] 3.1 Feed `GET /cosell-hive/v1/listings` (search, category, min-commission) + React cards (mockup 03)
-- [ ] 3.2 Tracked-link generator + copy button (mockup 06) via `HubClient::createToken()`
-- [ ] 3.3 Shortcode `[cosell_product id="" style="card"]` + Gutenberg `product-card` block (`block.json`, `render_callback`, server-rendered)
+> Status: DONE 2026-10-02 — feed REST + React cards, link minting + embed generator, shortcode + dynamic block sharing one server renderer, click-time-token go redirector. `phpcs`/`tsc`/`build`/smoke green. Feature doc: `docs/features/03-affiliate-feed-links.md`.
+
+- [x] 3.1 Feed `GET /cosell-hive/v1/listings` (search, category, min-commission) + React cards (mockup 03)
+- [x] 3.2 Tracked-link generator + copy button (mockup 06) via `HubClient::createToken()`
+- [x] 3.3 Shortcode `[cosell_product id="" style="card"]` + Gutenberg `product-card` block (`block.json`, `render_callback`, server-rendered)
 
 ## Phase 4 — Tracking + commission engine
 

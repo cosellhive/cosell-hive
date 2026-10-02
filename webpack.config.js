@@ -7,6 +7,7 @@ const entries = {
 	'cosell-hive-feed': './src/affiliate/feed.tsx',
 	'cosell-hive-wallet': './src/affiliate/wallet.tsx',
 	'cosell-hive-links': './src/affiliate/links.tsx',
+	'cosell-hive-product-card': './src/blocks/product-card/index.tsx',
 };
 
 module.exports = {

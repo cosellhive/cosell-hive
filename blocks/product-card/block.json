@@ -1,0 +1,15 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cosell-hive/product-card",
+	"title": "CoSellHive Product",
+	"category": "widgets",
+	"description": "Embed a marketplace product with your tracked affiliate link.",
+	"attributes": {
+		"listingId": { "type": "string", "default": "" },
+		"affiliateId": { "type": "number", "default": 0 },
+		"style": { "type": "string", "default": "card" }
+	},
+	"supports": { "html": false },
+	"textdomain": "cosell-hive"
+}

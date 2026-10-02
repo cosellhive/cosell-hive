@@ -181,6 +181,7 @@ final class Plugin {
 	 */
 	public function load_modules() {
 		new \CoSellHive\Modules\Store\Module( $this );
+		new \CoSellHive\Modules\Affiliate\Module( $this );
 	}
 
 	/**

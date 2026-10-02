@@ -8,6 +8,7 @@
 namespace CoSellHive\Admin;
 
 use CoSellHive\Hub\HubClientInterface;
+use CoSellHive\Marketplace\ListingPresenter;
 use CoSellHive\Modules\Store\ProductMeta;
 use CoSellHive\Repository\ListingRepository;
 
@@ -214,42 +215,16 @@ class ApprovalQueueController {
 	 * @return array|null
 	 */
 	private function enrich( $row ) {
-		$product_id = absint( $row->product_id );
+		$presenter = new ListingPresenter();
+		$item      = $presenter->present( $row );
 
-		if ( ! function_exists( 'wc_get_product' ) ) {
+		if ( null === $item ) {
 			return null;
 		}
 
-		$product = wc_get_product( $product_id );
+		$item['flags'] = $this->anomaly_flags( $item['product_id'], $item['commission']['type'], $item['commission']['value'] );
 
-		if ( ! $product ) {
-			return null;
-		}
-
-		$type  = get_post_meta( $product_id, ProductMeta::META_TYPE, true );
-		$value = get_post_meta( $product_id, ProductMeta::META_VALUE, true );
-
-		if ( ! in_array( $type, array( 'flat', 'percent' ), true ) ) {
-			$type = 'percent';
-		}
-
-		$image_id = method_exists( $product, 'get_image_id' ) ? $product->get_image_id() : 0;
-
-		return array(
-			'id'          => absint( $row->id ),
-			'product_id'  => $product_id,
-			'title'       => $product->get_name(),
-			'image'       => $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : '',
-			'store'       => get_bloginfo( 'name' ),
-			'commission'  => array(
-				'type'  => $type,
-				'value' => $value,
-				'label' => 'percent' === $type ? $value . '%' : $value . ' flat',
-			),
-			'status'      => $row->status,
-			'submitted'   => $row->submitted_at,
-			'flags'       => $this->anomaly_flags( $product_id, $type, $value ),
-		);
+		return $item;
 	}
 
 	/**

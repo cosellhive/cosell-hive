@@ -162,6 +162,46 @@ class ListingRepository {
 	}
 
 	/**
+	 * Find a row by product ID.
+	 *
+	 * @param int $product_id Product ID.
+	 * @return object|null
+	 */
+	public function find_by_product_id( $product_id ) {
+		global $wpdb;
+
+		return $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM ' . $this->table() . ' WHERE product_id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				absint( $product_id )
+			)
+		);
+	}
+
+	/**
+	 * Find a row by hub listing ID.
+	 *
+	 * @param string $hub_id Hub listing ID.
+	 * @return object|null
+	 */
+	public function find_by_hub_id( $hub_id ) {
+		global $wpdb;
+
+		$hub_id = sanitize_text_field( $hub_id );
+
+		if ( '' === $hub_id ) {
+			return null;
+		}
+
+		return $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM ' . $this->table() . ' WHERE hub_listing_id = %s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$hub_id
+			)
+		);
+	}
+
+	/**
 	 * Count rows per status.
 	 *
 	 * @return array
