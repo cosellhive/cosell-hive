@@ -45,17 +45,10 @@ Always on the store owner's own site. The plugin only tracks the referral token.
 = How are commissions paid in V1? =
 Manual payout requests approved by the site admin. Automated rails arrive in V2.
 
-== Screenshots ==
-
-1. Store publish panel with commission type and cap.
-2. Store dashboard with listings, affiliates, GMV.
-3. Affiliate marketplace feed.
-4. Affiliate wallet and payout history.
-5. Admin approval queue.
-6. Tracked links and embed generator.
-7. Onboarding with license activation and role selection.
+= What data does the plugin store? =
+Click tokens with hashed (never raw) IP/user-agent data, commission rows per attributed order, and AES-encrypted payout details. See Tools > Export/Erase Personal Data to export or anonymize affiliate data.
 
 == Changelog ==
 
 = 0.1.0 =
-* Initial Phase 0 skeleton: bootstrap, roles, hub/license stubs, React mount points.
+* V1 pilot: store publishing with commission offers, admin approval queue, affiliate feed with tracked links and product embeds, click-to-commission tracking with state machine, wallet with manual payouts, onboarding with license activation.

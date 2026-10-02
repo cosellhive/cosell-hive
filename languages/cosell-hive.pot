@@ -1,0 +1,306 @@
+# Copyright (C) 2026 CoSellHive
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: CoSellHive 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cosell-hive\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-02T10:30:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cosell-hive\n"
+
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: cosell-hive.php
+#: includes/Admin/Menu.php:33
+#: includes/Admin/Menu.php:34
+#: modules/Store/ProductMeta.php:62
+msgid "CoSellHive"
+msgstr ""
+
+#. Description of the plugin
+#: cosell-hive.php
+msgid "Turn any WooCommerce store into a node in a shared affiliate marketplace. Publish products with commission, let affiliates promote them, track and pay out — without touching fulfillment."
+msgstr ""
+
+#. Author URI of the plugin
+#: cosell-hive.php
+msgid "https://cosellhive.com"
+msgstr ""
+
+#: includes/Admin/ApprovalQueueController.php:172
+msgid "Listing not found."
+msgstr ""
+
+#: includes/Admin/ApprovalQueueController.php:180
+msgid "This listing already has a decision."
+msgstr ""
+
+#. translators: 1: rate multiple, 2: category average percent
+#: includes/Admin/ApprovalQueueController.php:260
+#, php-format
+msgid "Commission rate is %1$sx the category average (%2$s%%) — verify before approving"
+msgstr ""
+
+#: includes/Admin/Menu.php:43
+msgid "Marketplace"
+msgstr ""
+
+#: includes/Admin/Menu.php:44
+msgid "My Links"
+msgstr ""
+
+#: includes/Admin/Menu.php:45
+msgid "Wallet"
+msgstr ""
+
+#: includes/Admin/Menu.php:46
+msgid "Approvals"
+msgstr ""
+
+#: includes/Admin/Menu.php:47
+#: includes/Core/Plugin.php:219
+msgid "Onboarding"
+msgstr ""
+
+#: includes/Admin/Menu.php:72
+msgid "Loading CoSellHive…"
+msgstr ""
+
+#: includes/Core/Installer.php:62
+msgid "CoSellHive Store"
+msgstr ""
+
+#: includes/Core/Installer.php:71
+msgid "CoSellHive Affiliate"
+msgstr ""
+
+#: includes/Core/Plugin.php:134
+msgid "CoSellHive requires PHP 7.4 or greater."
+msgstr ""
+
+#: includes/Core/Plugin.php:135
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: includes/Core/Plugin.php:220
+msgid "Settings"
+msgstr ""
+
+#: includes/Core/Privacy.php:55
+msgid "CoSellHive stores affiliate marketing data so commissions can be calculated and paid:"
+msgstr ""
+
+#: includes/Core/Privacy.php:57
+msgid "Clicks: a tracking token, the promoted product, the affiliate account, and one-way hashes of IP and user agent (never raw values), with a timestamp."
+msgstr ""
+
+#: includes/Core/Privacy.php:58
+msgid "Commissions: order reference, amounts, currency, and payout status per attributed order."
+msgstr ""
+
+#: includes/Core/Privacy.php:59
+msgid "Payouts: requested amounts, the chosen method, and account details stored encrypted — only masked values are ever displayed."
+msgstr ""
+
+#: includes/Core/Privacy.php:61
+msgid "Order attribution tokens are also stored in order metadata and a short-lived cookie (default 30 days). License status and the site role (store or affiliate) are stored in site options."
+msgstr ""
+
+#: includes/Core/Privacy.php:74
+#: includes/Core/Privacy.php:89
+msgid "CoSellHive data"
+msgstr ""
+
+#: includes/Core/Privacy.php:130
+msgid "Commissions"
+msgstr ""
+
+#: includes/Core/Privacy.php:134
+msgid "Order ID"
+msgstr ""
+
+#: includes/Core/Privacy.php:138
+#: includes/Core/Privacy.php:164
+msgid "Amount"
+msgstr ""
+
+#: includes/Core/Privacy.php:142
+#: includes/Core/Privacy.php:172
+msgid "Status"
+msgstr ""
+
+#: includes/Core/Privacy.php:160
+msgid "Payouts"
+msgstr ""
+
+#: includes/Core/Privacy.php:168
+msgid "Method"
+msgstr ""
+
+#: includes/Core/Privacy.php:239
+msgid "Affiliate links anonymized; commission amounts retained for accounting."
+msgstr ""
+
+#: includes/License/Heartbeat.php:99
+msgid "CoSellHive: license validation failed. Premium features are limited until the license is renewed — tracking and payouts keep working."
+msgstr ""
+
+#: includes/Marketplace/ListingPresenter.php:80
+#: modules/Store/DashboardController.php:158
+msgid "Not set"
+msgstr ""
+
+#. translators: %s: commission percent
+#: includes/Marketplace/ListingPresenter.php:85
+#, php-format
+msgid "%s%% commission"
+msgstr ""
+
+#. translators: %s: flat commission amount
+#: includes/Marketplace/ListingPresenter.php:89
+#: modules/Store/DashboardController.php:167
+#, php-format
+msgid "%s flat"
+msgstr ""
+
+#: includes/Security/Crypto.php:52
+msgid "Secure storage is unavailable: set unique salts in wp-config.php."
+msgstr ""
+
+#: includes/Security/Crypto.php:62
+msgid "Could not secure payout details. Try again."
+msgstr ""
+
+#: includes/Security/Crypto.php:81
+msgid "Secure storage is unavailable."
+msgstr ""
+
+#: includes/Security/Crypto.php:90
+#: includes/Security/Crypto.php:99
+msgid "Stored payout details are unreadable."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:59
+msgid "Unknown payout method."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:66
+msgid "Add your payout account details first."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:77
+msgid "Amount must be between 1 and your available balance."
+msgstr ""
+
+#. translators: %s: minimum payout amount in minor units
+#: includes/Wallet/PayoutService.php:85
+#, php-format
+msgid "Minimum payout is %s."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:151
+#: includes/Wallet/PayoutService.php:209
+msgid "Payout not found."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:158
+msgid "Only approved payouts can be marked paid."
+msgstr ""
+
+#: includes/Wallet/PayoutService.php:216
+msgid "This payout is no longer awaiting a decision."
+msgstr ""
+
+#: modules/Affiliate/LinksController.php:96
+msgid "This product is not available for promotion."
+msgstr ""
+
+#: modules/Affiliate/OnboardingController.php:133
+msgid "Enter a license key."
+msgstr ""
+
+#: modules/Affiliate/OnboardingController.php:149
+msgid "This license key was not accepted."
+msgstr ""
+
+#: modules/Affiliate/WalletController.php:159
+msgid "(deleted user)"
+msgstr ""
+
+#: modules/Affiliate/WalletController.php:258
+msgid "(unreadable)"
+msgstr ""
+
+#. translators: %s: commission percent
+#: modules/Store/DashboardController.php:163
+#, php-format
+msgid "%s%%"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:97
+msgid "Available for affiliation"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:98
+msgid "Publish this product to the CoSellHive marketplace for review."
+msgstr ""
+
+#: modules/Store/ProductMeta.php:106
+msgid "Commission type"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:108
+msgid "Percentage"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:109
+msgid "Flat amount"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:118
+msgid "Commission rate"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:119
+msgid "Percent (0–100) or flat amount in store currency."
+msgstr ""
+
+#: modules/Store/ProductMeta.php:132
+msgid "Cap per order (optional)"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:133
+msgid "Leave empty for no cap."
+msgstr ""
+
+#: modules/Store/ProductMeta.php:143
+msgid "Marketplace status"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:147
+msgid "Marketplace ID"
+msgstr ""
+
+#: modules/Store/ProductMeta.php:184
+msgid "CoSellHive: commission percent must be between 0 and 100. Previous value kept."
+msgstr ""
+
+#: modules/Store/ProductMeta.php:185
+msgid "CoSellHive: flat commission must be zero or greater. Previous value kept."
+msgstr ""
+
+#: blocks/product-card/block.json
+msgctxt "block title"
+msgid "CoSellHive Product"
+msgstr ""
+
+#: blocks/product-card/block.json
+msgctxt "block description"
+msgid "Embed a marketplace product with your tracked affiliate link."
+msgstr ""

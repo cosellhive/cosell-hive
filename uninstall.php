@@ -24,3 +24,6 @@ foreach ( $options as $option ) {
 	delete_option( $option );
 	delete_site_option( $option );
 }
+
+remove_role( 'ch_store' );
+remove_role( 'ch_affiliate' );

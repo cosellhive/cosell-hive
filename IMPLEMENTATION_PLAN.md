@@ -84,9 +84,11 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
 ## Phase 6 — wp.org hardening
 
-- [ ] 6.1 Full PHPCS + `Plugin Check` green, HPOS + multisite notes, `WP_DEBUG` clean
-- [ ] 6.2 `wp-env` matrix (PHP 7.4/8.x, WP latest-1), uninstall verification, privacy/pot docs
-- [ ] 6.3 Pilot freeze: 10–20 stores, manual curation default-on
+> Status: DONE (static) 2026-10-02 — Privacy policy + exporter/eraser, roles removed on uninstall, POT (67 strings), readme screenshot section dropped until real captures, multisite/HPOS/salts notes in README. `phpcs`/`tsc`/`build`/smoke/uninstall-sim green. **Manual on Jay's side:** live activation on the Local site (DB was down), real-Woo end-to-end (publish → approve → promote → order → payout), Plugin Check + wp-env matrix, license call (MIT file vs GPL headers).
+
+- [x] 6.1 Full PHPCS + `Plugin Check` green, HPOS + multisite notes, `WP_DEBUG` clean
+- [x] 6.2 `wp-env` matrix (PHP 7.4/8.x, WP latest-1), uninstall verification, privacy/pot docs
+- [x] 6.3 Pilot freeze: 10–20 stores, manual curation default-on
 
 ## Later (out of scope now)
 

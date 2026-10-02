@@ -167,6 +167,9 @@ final class Plugin {
 		$heartbeat = new \CoSellHive\License\Heartbeat( $this );
 		$heartbeat->register();
 
+		$privacy = new Privacy();
+		$privacy->register();
+
 		if ( is_admin() ) {
 			new Menu();
 			new Assets();

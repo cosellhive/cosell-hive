@@ -46,6 +46,15 @@ npx tsc --noEmit     # typecheck
 - [`docs/features/`](docs/features/) — per-feature usage docs (added when each feature ships)
 - [`readme.txt`](readme.txt) — wp.org listing copy (separate format, keep in sync on release)
 
+## Operating notes
+
+- **WooCommerce** is required for store-side features only (publishing, order attribution). Affiliate feed, links, and wallet work without it.
+- **HPOS compatible** (`custom_order_tables` + `cart_checkout_blocks` declared). Product hooks used are HPOS-safe.
+- **Multisite:** activate per site — network activation only installs roles/tables on the main site. Tables and options are per-blog by design.
+- **Unique salts** in `wp-config.php` are mandatory for encrypted payout details; requests fail closed without them, and rotating salts orphans stored details (affiliates re-enter them).
+- **Screenshots** for the wp.org listing must be real UI captures added at release time (`readme.txt` deliberately ships no `== Screenshots ==` section until then).
+- **`languages/cosell-hive.pot`** regenerates with `wp i18n make-pot . languages/cosell-hive.pot`.
+
 ## License
 
 GPL-2.0-or-later (see plugin headers and `readme.txt`).
