@@ -63,7 +63,8 @@ final class Signature {
 	 * @return bool
 	 */
 	public static function verify( $timestamp, $body, $secret, $signature ) {
-		if ( '' === $body || '' === $secret || '' === $signature ) {
+		// Empty bodies (GET, bodiless POSTs) are legitimate — only null is rejected.
+		if ( null === $body || '' === $secret || '' === $signature ) {
 			return false;
 		}
 
