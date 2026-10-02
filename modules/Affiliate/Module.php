@@ -35,11 +35,17 @@ class Module {
 	public function __construct( Plugin $plugin ) {
 		$this->plugin = $plugin;
 
-		$feed = new FeedController();
+		$feed  = new FeedController();
 		$feed->register();
 
 		$links = new LinksController( $plugin );
 		$links->register();
+
+		$wallet = new WalletController();
+		$wallet->register();
+
+		$onboarding = new OnboardingController( $plugin );
+		$onboarding->register();
 
 		$card = new ProductCard();
 		$card->register();

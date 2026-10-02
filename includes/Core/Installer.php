@@ -10,7 +10,9 @@ namespace CoSellHive\Core;
 use CoSellHive\Repository\ListingRepository;
 use CoSellHive\Repository\ClickRepository;
 use CoSellHive\Repository\CommissionRepository;
+use CoSellHive\Repository\PayoutRepository;
 use CoSellHive\Tracking\Reconciler;
+use CoSellHive\License\Heartbeat;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -32,6 +34,7 @@ class Installer {
 		$this->create_tables();
 
 		Reconciler::schedule();
+		Heartbeat::schedule();
 
 		flush_rewrite_rules();
 	}
@@ -43,6 +46,7 @@ class Installer {
 	 */
 	public function deactivate() {
 		wp_clear_scheduled_hook( Reconciler::CRON_HOOK );
+		wp_clear_scheduled_hook( Heartbeat::CRON_HOOK );
 
 		flush_rewrite_rules();
 	}
@@ -107,6 +111,9 @@ class Installer {
 
 		$commissions = new CommissionRepository();
 		$commissions->create_table();
+
+		$payouts = new PayoutRepository();
+		$payouts->create_table();
 	}
 
 	/**

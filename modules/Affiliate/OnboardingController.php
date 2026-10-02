@@ -1,0 +1,165 @@
+<?php
+/**
+ * Onboarding REST endpoints (mockup 07).
+ *
+ * @package CoSellHive
+ */
+
+namespace CoSellHive\Modules\Affiliate;
+
+use CoSellHive\Core\Plugin;
+use CoSellHive\License\LicenseClientInterface;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * License activation + site-role selection.
+ */
+class OnboardingController {
+
+	const NAMESPACE = 'cosell-hive/v1';
+	const ROUTE     = '/onboarding';
+
+	/**
+	 * License client.
+	 *
+	 * @var LicenseClientInterface
+	 */
+	private $license;
+
+	/**
+	 * Main plugin instance (hub access for entitlements).
+	 *
+	 * @var Plugin
+	 */
+	private $plugin;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Plugin $plugin Main plugin instance.
+	 */
+	public function __construct( Plugin $plugin ) {
+		$this->plugin  = $plugin;
+		$this->license = $plugin->license;
+	}
+
+	/**
+	 * Register routes.
+	 *
+	 * @return void
+	 */
+	public function register() {
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	}
+
+	/**
+	 * Register onboarding routes.
+	 *
+	 * @return void
+	 */
+	public function register_routes() {
+		register_rest_route(
+			self::NAMESPACE,
+			self::ROUTE,
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_status' ),
+				'permission_callback' => array( $this, 'can_onboard' ),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			self::ROUTE . '/activate',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'activate' ),
+				'permission_callback' => array( $this, 'can_onboard' ),
+				'args'                => array(
+					'key'  => array(
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'role' => array(
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_key',
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Site admins only.
+	 *
+	 * @return bool
+	 */
+	public function can_onboard() {
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Current onboarding state.
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_status() {
+		$stored = get_option( 'cosell_hive_license', array() );
+
+		return rest_ensure_response(
+			array(
+				'connected'    => is_array( $stored ) && isset( $stored['key'] ),
+				'site_role'    => get_option( 'cosell_hive_site_role', '' ),
+				'entitlements' => $this->plugin->hub->get_entitlements(),
+			)
+		);
+	}
+
+	/**
+	 * Activate a license key + record the site role.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @return \WP_REST_Response|\WP_Error
+	 */
+	public function activate( \WP_REST_Request $request ) {
+		$key = substr( sanitize_text_field( $request->get_param( 'key' ) ), 0, 128 );
+
+		if ( '' === $key ) {
+			return new \WP_Error(
+				'cosell_hive_missing_key',
+				__( 'Enter a license key.', 'cosell-hive' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$role = $request->get_param( 'role' );
+
+		if ( ! in_array( $role, array( 'store', 'affiliate', '' ), true ) ) {
+			$role = '';
+		}
+
+		$result = $this->license->activate( $key );
+
+		if ( ! isset( $result['valid'] ) || ! $result['valid'] ) {
+			return new \WP_Error(
+				'cosell_hive_invalid_key',
+				__( 'This license key was not accepted.', 'cosell-hive' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		update_option( 'cosell_hive_site_role', $role );
+		update_option( 'cosell_hive_onboarded', 1 );
+
+		return rest_ensure_response(
+			array(
+				'connected'    => true,
+				'site_role'    => $role,
+				'entitlements' => $this->plugin->hub->get_entitlements(),
+			)
+		);
+	}
+}

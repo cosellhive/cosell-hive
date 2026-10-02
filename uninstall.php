@@ -15,7 +15,9 @@ $options = array(
 	'cosell_hive_db_version',
 	'cosell_hive_settings',
 	'cosell_hive_license',
-	'cosell_hive_role',
+	'cosell_hive_license_status',
+	'cosell_hive_site_role',
+	'cosell_hive_onboarded',
 );
 
 foreach ( $options as $option ) {

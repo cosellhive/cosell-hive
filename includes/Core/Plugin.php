@@ -164,6 +164,9 @@ final class Plugin {
 		$approvals = new \CoSellHive\Admin\ApprovalQueueController( $this->container['hub'] );
 		$approvals->register();
 
+		$heartbeat = new \CoSellHive\License\Heartbeat( $this );
+		$heartbeat->register();
+
 		if ( is_admin() ) {
 			new Menu();
 			new Assets();

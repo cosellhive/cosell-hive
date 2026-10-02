@@ -76,9 +76,11 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
 ## Phase 5 — Wallet + payouts + onboarding
 
-- [ ] 5.1 `wp_cosell_payouts` + `WalletService`/`PayoutService` (balances from `payable` only; PII encrypted)
-- [ ] 5.2 Manual payout flow: request → admin approve → mark paid (mockup 04)
-- [ ] 5.3 Onboarding wizard (mockup 07): license key → domain-lock stub → role select → entitlement fetch; heartbeat daily cron, graceful degradation
+> Status: DONE 2026-10-02 — payouts table + encrypted details, derived balances, FIFO-consumed manual flow, admin queue + wallet React, onboarding REST + React + heartbeat. `phpcs`/`tsc`/`build`/smoke green. Feature doc: `docs/features/05-wallet-payouts-onboarding.md`.
+
+- [x] 5.1 `wp_cosell_payouts` + `WalletService`/`PayoutService` (balances from `payable` only; PII encrypted)
+- [x] 5.2 Manual payout flow: request → admin approve → mark paid (mockup 04)
+- [x] 5.3 Onboarding wizard (mockup 07): license key → domain-lock stub → role select → entitlement fetch; heartbeat daily cron, graceful degradation
 
 ## Phase 6 — wp.org hardening
 
