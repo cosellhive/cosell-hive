@@ -66,11 +66,13 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
 ## Phase 4 — Tracking + commission engine
 
-- [ ] 4.1 `wp_cosell_clicks`, `wp_cosell_commissions` tables + repositories
-- [ ] 4.2 `/go/ch/<token>` redirector: hub `trackClick` → 302 to store URL + `?ch_token=`; cookie fallback, 30-day window, last-click
-- [ ] 4.3 `OrderReporter`: `woocommerce_checkout_create_order` writes `_cosell_hive_token`; `woocommerce_order_status_changed` → signed `POST` (HMAC + timestamp, 5-min replay window)
-- [ ] 4.4 `CommissionService` state machine (`pending→confirmed→holding→payable→paid`, `→reversed`); COD holds until `completed`; refund → `reversed`, post-payout → negative forward balance
-- [ ] 4.5 `Reconciler` daily cron + escalation ladder (notice → auto-pause → suspend), tolerance for lag
+> Status: DONE 2026-10-02 — clicks + commissions tables, token capture chain (session → cookie, window-validated), full state machine incl. COD rules + post-payout negative carry, daily cron (advance/expire/backfill), HMAC seam, live dashboard tiles. `phpcs`/smoke green. Feature doc: `docs/features/04-tracking-commissions.md`.
+
+- [x] 4.1 `wp_cosell_clicks`, `wp_cosell_commissions` tables + repositories
+- [x] 4.2 `/go/ch/<token>` redirector: hub `trackClick` → 302 to store URL + `?ch_token=`; cookie fallback, 30-day window, last-click
+- [x] 4.3 `OrderReporter`: `woocommerce_checkout_create_order` writes `_cosell_hive_token`; `woocommerce_order_status_changed` → signed `POST` (HMAC + timestamp, 5-min replay window)
+- [x] 4.4 `CommissionService` state machine (`pending→confirmed→holding→payable→paid`, `→reversed`); COD holds until `completed`; refund → `reversed`, post-payout → negative forward balance
+- [x] 4.5 `Reconciler` daily cron + escalation ladder (notice → auto-pause → suspend), tolerance for lag
 
 ## Phase 5 — Wallet + payouts + onboarding
 

@@ -7,6 +7,8 @@
 
 namespace CoSellHive\Modules\Store;
 
+use CoSellHive\Repository\CommissionRepository;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -57,10 +59,7 @@ class DashboardController {
 	}
 
 	/**
-	 * Build the dashboard payload.
-	 *
-	 * Affiliate counts, GMV, and per-listing sales are stubs (0) until
-	 * the Phase 4 commission ledger exists. The shape is final.
+	 * Build the dashboard payload from listings + commission ledger.
 	 *
 	 * @return \WP_REST_Response
 	 */
@@ -74,13 +73,16 @@ class DashboardController {
 			}
 		);
 
+		$ledger = new CommissionRepository();
+		$store  = $ledger->stats_for_store();
+
 		return rest_ensure_response(
 			array(
 				'stats'    => array(
-					'active_listings'  => count( $active ),
-					'active_affiliates' => 0,
-					'gmv_this_month'   => 0,
-					'commission_paid'  => 0,
+					'active_listings'   => count( $active ),
+					'active_affiliates' => $store['affiliates'],
+					'gmv_this_month'    => $store['gmv_month_minor'] / 100,
+					'commission_paid'   => $store['paid_minor'] / 100,
 				),
 				'listings' => array_values( $listings ),
 			)
@@ -120,6 +122,9 @@ class DashboardController {
 				$type = 'percent';
 			}
 
+			$ledger = new CommissionRepository();
+			$stats  = $ledger->stats_for_product( $product_id );
+
 			$listings[] = array(
 				'id'             => $product_id,
 				'title'          => $product->get_name(),
@@ -133,8 +138,8 @@ class DashboardController {
 				),
 				'status'         => get_post_meta( $product_id, ProductMeta::META_STATUS, true ),
 				'hub_id'         => get_post_meta( $product_id, ProductMeta::META_HUB_ID, true ),
-				'affiliates'     => 0,
-				'sales_30d'      => 0,
+				'affiliates'     => $stats['affiliates'],
+				'sales_30d'      => $stats['sales_30d'],
 			);
 		}
 

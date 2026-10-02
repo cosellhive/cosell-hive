@@ -60,6 +60,12 @@ class Module {
 
 		add_action( 'before_woocommerce_init', array( $this, 'declare_hpos_compatibility' ) );
 
+		$reporter = new \CoSellHive\Tracking\OrderReporter( $plugin );
+		$reporter->register();
+
+		$reconciler = new \CoSellHive\Tracking\Reconciler();
+		$reconciler->register();
+
 		if ( $this->is_woo_active() ) {
 			$this->product_meta->register();
 			$this->sync->register();

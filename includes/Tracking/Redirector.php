@@ -8,6 +8,7 @@
 namespace CoSellHive\Tracking;
 
 use CoSellHive\Core\Plugin;
+use CoSellHive\Repository\ClickRepository;
 use CoSellHive\Repository\ListingRepository;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -127,6 +128,24 @@ class Redirector {
 		if ( '' === $token ) {
 			return;
 		}
+
+		$clicks = new ClickRepository();
+		$clicks->record( $token, $product_id, $affiliate_id );
+
+		$days = absint( cosell_hive_get_setting( 'attribution_days', 30 ) );
+
+		setcookie(
+			OrderReporter::COOKIE_NAME,
+			$token,
+			array(
+				'expires'  => time() + $days * DAY_IN_SECONDS,
+				'path'     => COOKIEPATH,
+				'domain'   => COOKIE_DOMAIN,
+				'secure'   => is_ssl(),
+				'httponly' => true,
+				'samesite' => 'Lax',
+			)
+		);
 
 		wp_safe_redirect( add_query_arg( 'ch_token', rawurlencode( $token ), get_permalink( $product_id ) ), 302 );
 		exit;
