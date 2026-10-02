@@ -158,6 +158,12 @@ final class Plugin {
 		$this->container['hub']     = HubClientFactory::create();
 		$this->container['license'] = new StubLicenseClient();
 
+		$installer = new Installer();
+		$installer->register();
+
+		$approvals = new \CoSellHive\Admin\ApprovalQueueController( $this->container['hub'] );
+		$approvals->register();
+
 		if ( is_admin() ) {
 			new Menu();
 			new Assets();

@@ -8,6 +8,7 @@
 namespace CoSellHive\Modules\Store;
 
 use CoSellHive\Core\Plugin;
+use CoSellHive\Repository\ListingRepository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -87,6 +88,10 @@ class SyncService {
 
 		if ( 'yes' !== get_post_meta( $product_id, ProductMeta::META_ENABLED, true ) ) {
 			update_post_meta( $product_id, ProductMeta::META_STATUS, 'draft' );
+
+			$repository = new ListingRepository();
+			$repository->upsert( $product_id, 'draft' );
+
 			return;
 		}
 
@@ -94,6 +99,10 @@ class SyncService {
 
 		if ( ! $product ) {
 			update_post_meta( $product_id, ProductMeta::META_STATUS, 'draft' );
+
+			$repository = new ListingRepository();
+			$repository->upsert( $product_id, 'draft' );
+
 			return;
 		}
 
@@ -114,10 +123,16 @@ class SyncService {
 
 		$response = $this->plugin->hub->upsert_listing( $payload );
 
-		if ( isset( $response['hub_listing_id'] ) ) {
-			update_post_meta( $product_id, ProductMeta::META_HUB_ID, sanitize_text_field( $response['hub_listing_id'] ) );
+		$hub_id = isset( $response['hub_listing_id'] ) ? sanitize_text_field( $response['hub_listing_id'] ) : '';
+		$status = $paused ? 'paused' : 'pending';
+
+		if ( '' !== $hub_id ) {
+			update_post_meta( $product_id, ProductMeta::META_HUB_ID, $hub_id );
 		}
 
-		update_post_meta( $product_id, ProductMeta::META_STATUS, $paused ? 'paused' : 'pending' );
+		update_post_meta( $product_id, ProductMeta::META_STATUS, $status );
+
+		$repository = new ListingRepository();
+		$repository->upsert( $product_id, $status, $hub_id );
 	}
 }

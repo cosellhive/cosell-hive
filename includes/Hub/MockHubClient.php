@@ -25,7 +25,7 @@ class MockHubClient implements HubClientInterface {
 	public function upsert_listing( array $payload ) {
 		return array(
 			'hub_listing_id' => 'mock_' . ( isset( $payload['product_id'] ) ? absint( $payload['product_id'] ) : 0 ),
-			'status'         => 'pending',
+			'status'         => isset( $payload['status'] ) ? sanitize_key( $payload['status'] ) : 'pending',
 		);
 	}
 

@@ -7,6 +7,8 @@
 
 namespace CoSellHive\Core;
 
+use CoSellHive\Repository\ListingRepository;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -24,6 +26,7 @@ class Installer {
 	public function activate() {
 		$this->add_roles();
 		$this->add_options();
+		$this->create_tables();
 
 		flush_rewrite_rules();
 	}
@@ -63,6 +66,37 @@ class Installer {
 				'cosell_hive_affiliate' => true,
 			)
 		);
+	}
+
+	/**
+	 * Register the upgrade check for existing installs.
+	 *
+	 * @return void
+	 */
+	public function register() {
+		add_action( 'admin_init', array( $this, 'maybe_upgrade' ) );
+	}
+
+	/**
+	 * Run schema upgrades when the DB version lags.
+	 *
+	 * @return void
+	 */
+	public function maybe_upgrade() {
+		if ( COSELL_HIVE_DB_VERSION !== get_option( 'cosell_hive_db_version' ) ) {
+			$this->create_tables();
+			update_option( 'cosell_hive_db_version', COSELL_HIVE_DB_VERSION );
+		}
+	}
+
+	/**
+	 * Create custom tables.
+	 *
+	 * @return void
+	 */
+	private function create_tables() {
+		$repository = new ListingRepository();
+		$repository->create_table();
 	}
 
 	/**

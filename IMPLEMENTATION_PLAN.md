@@ -7,6 +7,10 @@
 
 Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
+## Track B — SaaS hub (separate private repo)
+
+> Lives at `CoSellHive/cosell-hive-hub` (proprietary, NestJS API + BullMQ workers + Postgres + Next.js console). Full plan: hub repo `HUB_PLAN.md`. Entry gate: **H0 contract freeze** (`packages/contracts/openapi.yaml`) — plugin `MockHubClient` conforms to it, then one adapter swap connects staging. Plugin V1 loop finishes against the mock in parallel.
+
 ---
 
 ## Phase 0 — Skeleton (approved scope, build now)
@@ -46,9 +50,11 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 
 ## Phase 2 — Admin approval queue
 
-- [ ] 2.1 `wp_cosell_listings` table + `ListingRepository` (`$wpdb->prepare` throughout)
-- [ ] 2.2 `ApprovalQueueController` + `GET/POST /cosell-hive/v1/listings/(approve|reject)` (nonce + `manage_options`)
-- [ ] 2.3 React queue UI (mockup 05) incl. anomaly-warning banner (static threshold in V1)
+> Status: DONE 2026-10-02 — `wp_cosell_listings` + repository, approve/reject REST + hub notify, React queue with static high-commission flag. `phpcs`/`tsc`/`build`/smoke green. Feature doc: `docs/features/02-approval-queue.md`.
+
+- [x] 2.1 `wp_cosell_listings` table + `ListingRepository` (`$wpdb->prepare` throughout)
+- [x] 2.2 `ApprovalQueueController` + `GET/POST /cosell-hive/v1/listings/(approve|reject)` (nonce + `manage_options`)
+- [x] 2.3 React queue UI (mockup 05) incl. anomaly-warning banner (static threshold in V1)
 
 ## Phase 3 — Affiliate feed + links + embed
 
