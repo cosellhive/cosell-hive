@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+* { box-sizing: border-box; }
+body { margin:0; padding:24px; background:#f0efe9; font-family: -apple-system, Helvetica, Arial, sans-serif; color:#1a1a18; }
+.frame { max-width:720px; margin:0 auto; background:#ffffff; border-radius:14px; border:1px solid #e4e2da; padding:24px; }
+.card { background:#ffffff; border-radius:12px; border:1px solid #e4e2da; padding:16px; }
+.tile { background:#f5f5f2; border-radius:8px; padding:16px; }
+.label { font-size:13px; color:#5f5e5a; margin:0 0 6px; }
+.muted { color:#888780; }
+.title { font-size:14px; font-weight:600; margin:0 0 2px; }
+.small { font-size:12px; color:#5f5e5a; margin:0; }
+.big { font-size:24px; font-weight:600; margin:0; }
+.badge { font-size:12px; padding:3px 9px; border-radius:8px; display:inline-block; }
+.badge-green { background:#EAF3DE; color:#3b6d11; }
+.badge-amber { background:#FAEEDA; color:#854F0B; }
+.badge-gray { background:#f5f5f2; color:#5f5e5a; }
+.badge-blue { background:#E6F1FB; color:#185FA5; }
+.badge-red { background:#FCEBEB; color:#A32D2D; }
+.btn { display:inline-block; border:1px solid #cfcdc4; border-radius:8px; padding:8px 14px; font-size:13px; background:#fff; color:#1a1a18; }
+.btn-dark { background:#1a1a18; color:#fff; border:none; }
+.btn-accent { background:#E6F1FB; color:#185FA5; border:1px solid #b5d4f4; }
+.btn-green { background:#639922; color:#fff; border:none; }
+input, .input { width:100%; border:1px solid #cfcdc4; border-radius:8px; padding:9px 10px; font-size:14px; color:#1a1a18; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+td { padding:10px 12px; border-bottom:1px solid #ece9e0; }
+.row { display:flex; }
+.gap8 { gap:8px; } .gap10 { gap:10px; } .gap12 { gap:12px; }
+.between { justify-content:space-between; align-items:center; }
+.wrap { flex-wrap:wrap; }
+.grid2 { display:flex; gap:12px; } .grid2 > div { flex:1; }
+.grid3 { display:flex; gap:12px; } .grid3 > div { flex:1; }
+.grid4 { display:flex; gap:10px; } .grid4 > div { flex:1; }
+.thumb { width:56px; height:56px; border-radius:8px; background:#f5f5f2; display:flex; align-items:center; justify-content:center; color:#888780; font-size:11px; flex-shrink:0; }
+.thumb-lg { width:100%; height:90px; border-radius:8px; background:#f5f5f2; display:flex; align-items:center; justify-content:center; color:#888780; font-size:12px; margin-bottom:10px; }
+</style></head><body><div class="frame" style="max-width:800px;">
+<div class="grid4" style="margin-bottom:16px;">
+  <div class="tile"><p class="label">Active listings</p><p class="big">32</p></div>
+  <div class="tile"><p class="label">Active affiliates</p><p class="big">147</p></div>
+  <div class="tile"><p class="label">GMV this month</p><p class="big">$8,420</p></div>
+  <div class="tile"><p class="label">Commission paid</p><p class="big">$1,516</p></div>
+</div>
+<div class="card" style="padding:0;overflow:hidden;">
+<table>
+<tr style="background:#fafaf8;"><td class="small">Product</td><td class="small">Commission</td><td class="small">Affiliates</td><td class="small">Sales (30d)</td><td class="small">Status</td></tr>
+<tr><td>Organic cotton tote bag</td><td>18%</td><td>24</td><td>41</td><td><span class="badge badge-green">Live</span></td></tr>
+<tr><td>Bamboo cutlery set</td><td>$3.50 flat</td><td>9</td><td>12</td><td><span class="badge badge-green">Live</span></td></tr>
+<tr><td>Recycled yoga mat</td><td>12%</td><td>3</td><td>2</td><td><span class="badge badge-amber">Pending review</span></td></tr>
+<tr><td>Linen tea towel set</td><td>15%</td><td>0</td><td>0</td><td><span class="badge badge-gray">Draft</span></td></tr>
+</table>
+</div>
+</div></body></html>

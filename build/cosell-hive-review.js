@@ -1,0 +1,1 @@
+(()=>{"use strict";const e=window.React,t=window.wp.element,o=document.getElementById("cosell-hive-root");o&&"cosell-hive-review"===o.dataset.page&&(0,t.createRoot)(o).render((0,e.createElement)("p",null,"Approval queue — Phase 2."))})();

@@ -1,0 +1,339 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>CoSellHive — PRD</h1>
+<p><strong>Model B: Open, cross-store product marketplace with AI-assisted discovery</strong></p>
+<p>Status: Draft v1 · Owner: Jay</p>
+<hr>
+<h2>1. Vision</h2>
+<p>A WordPress plugin that turns any WooCommerce store into a node in a shared affiliate network. Store owners publish products with a commission offer into a central marketplace; anyone running the plugin as an &quot;affiliate&quot; can pull those products onto their own site and earn commission on resulting sales — without ever touching fulfillment, payment, or inventory.</p>
+<p>Positioning: <strong>&quot;ShareASale / Refersion Marketplace, native to WordPress — install a plugin instead of signing up for a SaaS dashboard.&quot;</strong> WooCommerce runs a large share of small e-commerce and most of those store owners don't want a separate SaaS login, a JS pixel, and a second billing relationship. We make the marketplace and the store live in the same admin the owner already uses.</p>
+<h2>2. Users</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Wants</th>
+<th>Does not want to deal with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Store Owner</strong></td>
+<td>More sales channels without hiring a marketing team</td>
+<td>Managing individual affiliate relationships, chasing content creators</td>
+</tr>
+<tr>
+<td><strong>Affiliate</strong></td>
+<td>Products to promote that fit their audience, without inventory/fulfillment risk</td>
+<td>Sourcing suppliers, customer service, shipping, returns</td>
+</tr>
+<tr>
+<td><strong>Platform (us)</strong></td>
+<td>Transaction volume + trust, so both sides return</td>
+<td>Being blamed as &quot;merchant of record&quot; for a bad product or a bad affiliate</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Core Loop</h2>
+<ol>
+<li>Store owner marks a product &quot;available for affiliation,&quot; sets commission (flat or %), publishes to the marketplace.</li>
+<li>Affiliate browses/searches the marketplace, adds a product to their site (via shortcode/block, pulling live title, image, price, stock from our API).</li>
+<li>Visitor clicks through from the affiliate's site → redirected to the store's own product/checkout page with a tracked token.</li>
+<li>Order is placed and fulfilled entirely on the store owner's site.</li>
+<li>Commission is calculated, held, confirmed, and eventually paid to the affiliate's wallet.</li>
+</ol>
+<p>The affiliate never touches the order. The store owner never manages individual affiliate relationships one-by-one — the marketplace does discovery and matching.</p>
+<h2>4. Where AI Makes This Different</h2>
+<p>Being &quot;ShareASale for WordPress&quot; alone is a distribution wedge, not a moat — a well-funded competitor could copy the plugin. The AI layer is what makes the marketplace <em>better with scale</em> rather than just <em>available on WordPress</em>.</p>
+<table>
+<thead>
+<tr>
+<th>AI Feature</th>
+<th>Problem it solves</th>
+<th>For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fit-matching feed</strong></td>
+<td>Affiliates drown in an undifferentiated product list; most listings are irrelevant to their audience</td>
+<td>Affiliate</td>
+</tr>
+<tr>
+<td><strong>Auto-generated marketing copy</strong></td>
+<td>Affiliates (especially small ones) don't have time/skill to write product copy, so they never activate a listing</td>
+<td>Affiliate</td>
+</tr>
+<tr>
+<td><strong>Commission advisor</strong></td>
+<td>Store owners don't know what commission rate actually gets affiliate uptake — they either underprice (no one promotes it) or overprice (kills margin)</td>
+<td>Store owner</td>
+</tr>
+<tr>
+<td><strong>Fraud/anomaly scoring</strong></td>
+<td>COD + cross-site attribution is a fraud magnet (fake orders, self-referral, click farms); manual review doesn't scale</td>
+<td>Platform</td>
+</tr>
+<tr>
+<td><strong>Natural-language marketplace search</strong></td>
+<td>Category/price filters don't capture intent (&quot;eco-friendly skincare under $20 with good margin&quot;)</td>
+<td>Affiliate</td>
+</tr>
+<tr>
+<td><strong>AI storefront generator</strong></td>
+<td>Non-technical affiliates (a lot of the long tail) won't build a page manually</td>
+<td>Affiliate</td>
+</tr>
+</tbody>
+</table>
+<p>Detail on each is in §6.</p>
+<h2>5. Business Logic</h2>
+<h3>5.1 Product publishing &amp; sync</h3>
+<ul>
+<li>Store owner selects a product, sets <code>commission_type</code> (<code>flat</code> | <code>percent</code>), <code>commission_value</code>, optional min/max cap.</li>
+<li>On publish, product metadata (title, image, price, category, stock, description) pushes to the central catalog via webhook on <code>woocommerce_product_object_updated</code> / <code>woocommerce_update_product_stock</code>.</li>
+<li>Fallback: periodic reconciliation poll (every few hours) in case a webhook is missed.</li>
+<li>Product is auto-delisted from the marketplace if: out of stock, store subscription lapses, or store owner unpublishes it.</li>
+</ul>
+<h3>5.2 Commission engine — state machine</h3>
+<pre><code>click_tracked → order_placed (pending) → order_confirmed → holding_period → payable → paid
+                                     ↘ (refund/cancel at any stage) → reversed
+</code></pre>
+<ul>
+<li><strong>Card payment:</strong> confirmed on successful charge; short holding period (default: store's own refund window, e.g. 3–7 days) before payable.</li>
+<li><strong>COD:</strong> stays <code>pending</code> until order status = <code>completed</code>/delivered (store owner action or courier webhook if available); if no confirmation within a configurable window, commission expires unconfirmed.</li>
+<li>Refund or cancellation at any point before <code>paid</code> zeroes the commission. Refund <strong>after</strong> payout creates a negative balance carried forward against the affiliate's next payout — never a retroactive clawback demand.</li>
+</ul>
+<h3>5.3 Tracking &amp; attribution</h3>
+<ul>
+<li>Server-issued token per click (not cookie-only) — resilient to third-party cookie blocking / Safari ITP.</li>
+<li>Redirect flow: affiliate link → central hub logs click + token → redirect to store's actual product/checkout page with token param → store plugin writes token to WooCommerce order meta on order creation → reports back to hub on status change.</li>
+<li>Last-click attribution, configurable window (default 30 days) for v1–v2. Multi-touch attribution is a later-stage idea, not v1.</li>
+<li><strong>No embedded/remote checkout in early versions</strong> — checkout always happens on the store owner's own site. This avoids PCI scope and per-store tax/shipping complexity entirely.</li>
+</ul>
+<h3>5.4 Payouts</h3>
+<ul>
+<li>Per-affiliate wallet, balance accrues from <code>payable</code> commissions across all stores.</li>
+<li>v1: manual payout request → admin approval → manual transfer (bank/bKash/Nagad locally, PayPal internationally).</li>
+<li>v2+: automated rails (Stripe Connect / PayPal Payouts), minimum payout threshold, scheduled runs (weekly/monthly).</li>
+</ul>
+<h3>5.5 Marketplace discovery</h3>
+<ul>
+<li>v1: category browse, manual curation.</li>
+<li>v2: search + filters (category, commission %, price range).</li>
+<li>v3: AI-personalized feed (see §6.1) layered on top of, not replacing, manual search.</li>
+</ul>
+<h3>5.6 Trust &amp; safety</h3>
+<ul>
+<li>Store approval before public listing (manual in v1 — this is your main lever against a bad-actor store poisoning the marketplace early).</li>
+<li>Affiliate approval + basic identity check before payout eligibility.</li>
+<li>Self-referral detection: flag matching billing info / IP / device between affiliate account and buyer.</li>
+<li>Dispute/report flow for either side to flag the other.</li>
+</ul>
+<h3>5.7 Monetization</h3>
+<p>Primary mechanism: marketplace take rate on transactions. Everything else below is additive once GMV justifies it.</p>
+<p><strong>Revenue streams</strong></p>
+<ol>
+<li><strong>Transaction-based (take rate)</strong> — primary, live from V1/V2. % cut of affiliate commission (e.g. 15–20%), flat % of GMV, or a hybrid minimum-fee + %. Store owner only pays when a sale happens — easiest pitch against a free single-store plugin. <em>Implementation:</em> computed and deducted inside the commission ledger (§5.2) at the <code>payable</code> state, as a line item on every commission record — not a separate invoicing process.</li>
+<li><strong>Subscription/SaaS tiers</strong> — V2+. Free/Growth/Pro for store owners, gated by listed-product count, affiliate count, analytics depth, AI feature access. Optional affiliate-side pro tier. <em>Implementation:</em> tier flag on the account record, enforced at the API layer in the central hub (never in the plugin — see §11).</li>
+<li><strong>Sponsored/boosted listings</strong> — V3, after AI fit-matching (§6.1) is solid. Paid placement in the affiliate feed, clearly labeled. <em>Implementation:</em> a capped <code>sponsored_weight</code> blended into the ranking score so paid placement can't fully override relevance.</li>
+<li><strong>AI feature usage fees</strong> — V2–V3. Credits/pay-per-use for copy generation beyond a free allowance; paid storefront generator; commission-advisor insights as a premium unlock. <em>Implementation:</em> usage metering per account, billed via the same rail as subscription tiers.</li>
+<li><strong>Payout-adjacent fees</strong> — V3+. Small fee per payout run; FX spread on cross-border payouts. Instant/early payout advance for a fee — gated until fraud/holding-period accuracy is proven. Float/interest on held balances is flagged, not built early: money-transmitter licensing exposure in many jurisdictions, and reputational risk.</li>
+<li><strong>Data &amp; insights</strong> — V3+. Aggregated, anonymized benchmark reports (feeds off the commission-advisor model); API access fees for third parties wanting catalog data, with consent and anonymization. Never sell individual affiliate/store performance data.</li>
+<li><strong>Services revenue</strong> — available from V1, not scalable but useful for early cash flow. Paid onboarding/migration for larger stores; agency partner referral program (also a distribution channel).</li>
+<li><strong>B2B2B / licensing</strong> — V4+, gated. White-label the hub infrastructure to agencies/other platforms; API-as-a-service for third-party developers. See §11 for how this is protected.</li>
+<li><strong>Enterprise contracts</strong> — after track record exists. Custom annual deals, volume-discounted take rate for committed spend + SLAs.</li>
+</ol>
+<p><strong>Phasing</strong></p>
+<table>
+<thead>
+<tr>
+<th>Now (V1–V2)</th>
+<th>Once volume exists (V3)</th>
+<th>Later, gated (V4+)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Marketplace take rate</td>
+<td>Sponsored/boosted listings</td>
+<td>Instant payout advance</td>
+</tr>
+<tr>
+<td>Freemium subscription tiers</td>
+<td>AI feature usage credits</td>
+<td>White-label/API licensing</td>
+</tr>
+<tr>
+<td>Paid onboarding</td>
+<td>Benchmark/insight reports</td>
+<td>Float/interest income</td>
+</tr>
+<tr>
+<td>Agency partner referrals</td>
+<td>Enterprise contracts</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>6. AI Features — Detail</h2>
+<h3>6.1 Fit-matching feed</h3>
+<p>Embed each affiliate's declared niche + their existing site content (via a one-time crawl/RSS read at signup) and each product's title/description/category into a shared vector space. Score = similarity + category conversion history + commission attractiveness. Surface as &quot;Recommended for your site&quot; instead of a raw catalog dump. This is the single highest-leverage AI feature — it directly reduces both sides' biggest friction (irrelevant matches) and gets stronger as more transaction data accumulates.</p>
+<h3>6.2 Auto-generated marketing copy</h3>
+<p>From product metadata, generate a short blurb, a social caption, and a page-ready description in the affiliate's apparent tone (inferred from their site content). Affiliate can accept, edit, or regenerate. Removes the &quot;I don't have time to write this&quot; activation barrier for the long tail of small affiliates.</p>
+<h3>6.3 Commission advisor</h3>
+<p>Given a product's category, price, and margin (if the store owner opts to share cost data), recommend a commission range benchmarked against marketplace-wide uptake data for similar products (&quot;products in this range at 15-20% get picked up by 3x more affiliates than at 8%&quot;). Solves store owners' cold-start pricing problem.</p>
+<h3>6.4 Fraud/anomaly scoring</h3>
+<p>A scoring model over click velocity, IP/device overlap between affiliate and buyer, COD non-delivery rate by affiliate, and order-timing patterns. Feeds directly into the commission state machine — high-risk orders get an extended holding period or manual review instead of auto-progressing to <code>payable</code>. This needs real transaction volume to train against, so it's a v3+ feature, not v1.</p>
+<h3>6.5 Natural-language marketplace search</h3>
+<p>Semantic search over the catalog (&quot;eco-friendly skincare under $20 with 20%+ commission&quot;) instead of filter forms. Straightforward once the catalog has embeddings from §6.1.</p>
+<h3>6.6 AI storefront generator</h3>
+<p>One-click generated themed landing page (layout + copy + a curated product set) from a handful of selected products. Lowers the bar for non-technical affiliates to get a working page instead of hand-building one. A scale/moat feature, not core-loop-critical — sequence it late.</p>
+<h2>7. Version Roadmap</h2>
+<h3>V1 — Foundation (prove the trust loop)</h3>
+<p><em>No AI. No self-serve marketplace yet. Curated and manual on purpose — the goal is correctness, not scale.</em></p>
+<ul>
+<li>WP plugin: store role + affiliate role, central hub API</li>
+<li>Product publish → <strong>admin-approved</strong> curated marketplace (quality control while the network is thin)</li>
+<li>Full commission state machine (flat/% commission)</li>
+<li>Redirect-based tracking, server-issued token + cookie fallback</li>
+<li>Manual payout via admin-approved requests</li>
+<li>Basic affiliate dashboard: browse curated listings, get embed/link</li>
+<li>Pilot with a small hand-picked group (10–20 stores, 20–50 affiliates) to validate commission math and payout trust before opening up</li>
+</ul>
+<h3>V2 — Self-serve marketplace + first AI</h3>
+<ul>
+<li>Open self-serve publish/browse (remove manual curation bottleneck; automated basic listing checks instead)</li>
+<li>Search &amp; filters (category, commission %, price)</li>
+<li>Automated payouts (Stripe/PayPal + regional wallets)</li>
+<li>Automated refund/clawback tied to WooCommerce order-status webhooks</li>
+<li><strong>AI: fit-matching feed (6.1)</strong></li>
+<li><strong>AI: auto-generated marketing copy (6.2)</strong></li>
+<li>Platform fee turned on (monetization live)</li>
+</ul>
+<h3>V3 — Trust &amp; intelligence layer</h3>
+<ul>
+<li><strong>AI: fraud/anomaly scoring (6.4)</strong> feeding the commission state machine</li>
+<li><strong>AI: commission advisor (6.3)</strong></li>
+<li><strong>AI: natural-language search (6.5)</strong></li>
+<li>Analytics dashboards (store: top affiliates/conversion; affiliate: earnings/top products)</li>
+<li>Consolidated cross-store affiliate wallet if not already unified</li>
+</ul>
+<h3>V4 — Scale &amp; moat</h3>
+<ul>
+<li><strong>AI: storefront generator (6.6)</strong></li>
+<li>Multi-currency / multi-region payout rails</li>
+<li>Optional tiered/multi-level affiliate structure</li>
+<li>Public API/webhooks (Zapier-style integrations)</li>
+<li>Embeddable widget for non-WordPress sites (expand beyond the WP niche)</li>
+<li>Store/affiliate reputation &amp; rating system</li>
+</ul>
+<h2>8. Platform Expansion — Shopify &amp; Multi-Platform SaaS (Gated, Not Roadmapped)</h2>
+<p><strong>Not part of V1–V4. This is a set of trigger conditions, not a planned phase.</strong></p>
+<h3>8.1 Why this isn't a natural &quot;next version&quot;</h3>
+<p>WordPress is a genuine gap: no existing WP plugin runs a true cross-store affiliate marketplace. Shopify is not — <strong>UpPromote already owns this exact mechanic</strong> on Shopify (4.9 rating, 2,600+ reviews), with its own affiliate-facing marketplace as its headline differentiator against a long tail of other apps (GoAffPro, Social Snowball, BixGrow, Refersion, Affiliatly, LeadDyno, ReferralCandy, Tapfiliate). Porting the product as-is means competing on feature parity against an entrenched leader, on a platform where our &quot;no separate SaaS login&quot; wedge doesn't apply (everything on Shopify is already an app-store experience).</p>
+<h3>8.2 Barriers</h3>
+<ul>
+<li><strong>Technical:</strong> a second, non-trivial integration — OAuth + Admin GraphQL API + embedded App Bridge UI, not a port of the WooCommerce REST/webhook connector. Mandatory GDPR compliance webhooks (customer data request/redact, shop redact) required to pass app review.</li>
+<li><strong>Platform economics:</strong> not the blocker — Shopify takes 0% revenue share up to $1M lifetime app revenue, 15% above that. The cost is distribution and support, not platform fees.</li>
+<li><strong>Distribution:</strong> Shopify App Store search is pay-to-play-adjacent; competing apps have years of reviews and, in some cases, paid growth budgets.</li>
+<li><strong>Support:</strong> a second merchant profile and platform to support with a still-small team.</li>
+<li><strong>Strategic:</strong> our differentiator has to shift from &quot;the marketplace exists&quot; (already true on Shopify) to &quot;the marketplace is smarter&quot; — i.e., it only works if the AI layer (§6) is genuinely ahead of what UpPromote/Refersion offer.</li>
+</ul>
+<h3>8.3 Gating criteria — don't evaluate Shopify entry until ALL of these hold on WooCommerce</h3>
+<ul>
+<li>V2 self-serve marketplace live for 6+ months with organic (non-hand-held) store and affiliate signups</li>
+<li>At least one AI feature from §6 (fit-matching or auto-copy) live and measurably improving activation or conversion vs. a pre-AI baseline</li>
+<li>Fraud/clawback rate stable and low enough to trust the commission engine unattended</li>
+<li>A funding or revenue position that can absorb a second engineering + support track without slowing WooCommerce development</li>
+</ul>
+<h3>8.4 If/when triggered</h3>
+<ul>
+<li>Build Shopify as a <strong>second connector into the existing central hub</strong>, not a new product — commission engine, AI layer, payouts, and fraud scoring stay platform-agnostic; only the store-side connector (Admin GraphQL API vs. WooCommerce REST) and app-store packaging/billing differ.</li>
+<li>Position explicitly against the incumbent's weak point (smarter matching / lower fraud vs. &quot;a marketplace&quot;), never on feature parity alone.</li>
+<li>Budget for GDPR compliance webhooks and Shopify App Store review as fixed engineering cost, not a formality.</li>
+</ul>
+<h3>8.5 Full platform-agnostic SaaS (becoming a Refersion/ShareASale/Impact competitor)</h3>
+<p>Treat this as an option the central-hub architecture <em>preserves</em>, not a plan being executed. Those incumbents have years of fraud data, existing affiliate rosters, and funding well beyond bootstrap scale — this is a multi-year, likely externally-funded undertaking, and premature pursuit of it risks diluting focus from the WooCommerce wedge that's actually winnable now.</p>
+<h2>9. Key Risks / Open Decisions</h2>
+<ul>
+<li><strong>Cold start:</strong> two-sided marketplace — no affiliates without products, no products without affiliate traffic. V1's manual curation and hand-picked pilot exists specifically to de-risk this before opening the gates.</li>
+<li><strong>Fee resistance:</strong> store owners can already get a free single-store affiliate plugin (AffiliateWP-style); the pitch has to be &quot;we bring you affiliates,&quot; not &quot;we track commissions,&quot; or the platform cut won't feel worth it.</li>
+<li><strong>Webhook reliability at scale:</strong> WooCommerce sites vary wildly in hosting quality; the reconciliation-poll fallback in §5.1 isn't optional.</li>
+<li><strong>Merchant-of-record clarity:</strong> contracts need to state plainly that the store owner is the seller of record — the platform is a marketing/referral layer, not a party to the sale. Get this reviewed legally before opening the public marketplace (V2).</li>
+<li><strong>Cross-border payouts:</strong> if affiliates and stores span countries (likely, given WordPress's global footprint), payout rails and tax reporting get complex fast — scope V1/V2 to one or two regions first.</li>
+</ul>
+<h2>10. Commission Enforcement — Making Sure the Platform Actually Gets Paid</h2>
+<p>The core risk: this is a <strong>self-hosted plugin</strong>, not a platform-controlled app like a Shopify app. A store owner has root access to their own server and could, in principle, modify the plugin, skip the webhook call, or otherwise avoid reporting a commission-bearing order. Enforcement can't rely on &quot;the plugin behaves correctly&quot; — it has to make circumventing the platform cost more than it saves.</p>
+<h3>10.1 Core principle</h3>
+<p>The central hub is the sole source of truth. The plugin is a thin reporter with no authority to grant itself a &quot;confirmed, fee-free&quot; state — that state only exists if the hub says so. Everything below is different implementations of this one idea.</p>
+<h3>10.2 Concrete API surface</h3>
+<ul>
+<li><code>POST /v1/events/order</code> — signed webhook from the plugin on order create/status-change: <code>{order_id, attribution_token, status, amount, currency, timestamp}</code>.</li>
+<li>Signature header: <code>X-Signature: HMAC-SHA256(request_body, install_secret)</code>, plus <code>X-Timestamp</code>; requests older than ~5 minutes are rejected outright (replay protection).</li>
+<li><code>install_secret</code> is issued once, at plugin activation, via a paired key exchange (site registers its URL, hub returns a secret that's stored in <code>wp_options</code> and never re-displayed) — not embedded in distributed code.</li>
+<li><code>GET /v1/reconcile/{store_id}?since=&lt;timestamp&gt;</code> — a <strong>hub-initiated pull</strong>, independent of anything the plugin reports, using a read-only WooCommerce REST API key (scoped to <code>read</code> on orders) granted once at store connection.</li>
+</ul>
+<h3>10.3 Reconciliation cadence &amp; escalation</h3>
+<ul>
+<li>Run the reconciliation pull on a schedule (e.g., every 24h, more frequently for high-volume stores) and diff: orders in the store's own WooCommerce data that carry an attribution token vs. orders present in the hub's ledger.</li>
+<li>Allow a small tolerance (e.g., low single-digit % mismatch) for normal timing lag between order creation and webhook delivery. Beyond that:
+<ol>
+<li><strong>First flagged mismatch</strong> → automatic notice + a short grace period (e.g., 48h) to self-correct (re-sync, check webhook config).</li>
+<li><strong>Repeat mismatch within a rolling window</strong> → store's public marketplace listings auto-pause.</li>
+<li><strong>Clear, sustained pattern</strong> (tracked orders consistently missing) → account suspended pending manual review, formal breach notice issued.</li>
+</ol>
+</li>
+<li>This ladder is automatic, not manual triage — the deterrent only works if the cost is immediate and certain.</li>
+</ul>
+<h3>10.4 Card payments — the durable fix</h3>
+<ul>
+<li>Once volume justifies the build (realistically V3/V4): move card processing to <strong>Stripe Connect destination charges</strong>. The customer's payment lands in a platform-controlled Stripe account; <code>application_fee_amount</code> (the take rate) is deducted automatically; the remainder transfers to the store's connected account.</li>
+<li>This removes the enforcement problem entirely for card orders processed this way — there's nothing to under-report because the store never touches the gross amount. The cost is becoming a payment facilitator: owning the Connect platform account and handling connected-account KYC.</li>
+</ul>
+<h3>10.5 COD — the irreducible weak point</h3>
+<ul>
+<li>No payment processor sees cash-on-delivery money, so reconciliation and trust-tiering are the ceiling here, not a full fix.</li>
+<li>Require a track record on card-payment reconciliation (e.g., several clean months) before a store is eligible to list COD-enabled products in the public marketplace.</li>
+<li>A refundable deposit/bond from high-COD-volume stores is a real mechanic other marketplaces use as insurance against systematic under-reporting — worth considering at V3+, not before; it adds onboarding friction that isn't justified early.</li>
+</ul>
+<h3>10.6 Contractual backstop (illustrative — have counsel finalize actual language)</h3>
+<blockquote>
+<p>&quot;Merchant agrees that all Orders attributable to a Platform-tracked referral (evidenced by a valid Attribution Token) will be reported to the Commission Engine and remain subject to the applicable Platform Fee. Circumventing this reporting, including by technical means, constitutes a material breach and grounds for immediate suspension of Marketplace access.&quot;</p>
+</blockquote>
+<h2>11. IP Protection &amp; Licensing Implementation</h2>
+<p>Two different things need protecting, and they need different strategies: the plugin code itself, and the &quot;mechanism&quot; (matching, fraud, ranking logic) when it's licensed out.</p>
+<h3>11.1 The plugin code itself</h3>
+<p>WordPress plugins are conventionally GPL(-compatible) — the PHP is effectively redistributable whether or not it's listed on wp.org, so technical/legal lockdown of the code itself is a losing fight. Design around it instead: the plugin is a thin, largely disposable client (order/click event reporting, product display) that is worthless without an active connection to the central hub. The commission ledger, matching/ranking model, fraud scoring, and marketplace catalog all live server-side, in code that's never shipped. Someone can copy the plugin; they can't copy what makes it valuable, because that part was never distributed.</p>
+<h3>11.2 Distribution channel decision</h3>
+<ul>
+<li><strong>wp.org listing</strong> requires fully GPL-compatible code and means ceding any technical lockdown of the PHP — but it's the best organic-discovery channel, matching the &quot;just install a plugin&quot; positioning. Use it for a <strong>free connector tier</strong>.</li>
+<li><strong>Direct distribution</strong> (selling from your own site, like established commercial WP plugins do) gives more legal room but loses wp.org's discovery.</li>
+<li>Common middle path: a free connector plugin on wp.org for install/discovery, with paid features unlocked via license + live API access rather than by shipping different code.</li>
+</ul>
+<h3>11.3 Practical licensing mechanics</h3>
+<ul>
+<li>License key: a unique identifier tied to <code>{account_id, plan_tier}</code>, issued at signup.</li>
+<li><strong>Domain lock:</strong> the key activates against the store's URL; changing domains requires re-activation through the licensing server, which caps reactivations per period to deter sharing.</li>
+<li><strong>Heartbeat validation:</strong> the plugin checks in with the licensing server on a schedule (e.g., daily). On failure — expired, revoked, domain mismatch — paid features degrade gracefully rather than breaking checkout outright, so a transient API hiccup doesn't punish a legitimate customer.</li>
+<li><strong>Build vs. buy:</strong> this exact flow (key issuance, domain lock, update delivery, renewal billing) is a solved problem — Freemius or EDD Software Licensing handle it, and building it in-house is rarely worth the time versus the core product.</li>
+<li>The license check itself lives in distributable PHP and could technically be stripped out — but since the plugin does nothing useful without live API access, bypassing the check gains an attacker only a non-functional UI shell.</li>
+</ul>
+<h3>11.4 API response minimization</h3>
+<ul>
+<li>The ranking endpoint returns <code>{product_id, rank}</code> — never the underlying similarity score, conversion weight, or feature vector.</li>
+<li>The fraud-check endpoint returns <code>{order_id, action: &quot;release&quot; | &quot;hold&quot; | &quot;review&quot;}</code> — never a numeric risk score or the specific signals that triggered it.</li>
+<li>Rate-limit per API key to blunt systematic probing aimed at reconstructing the ranking or fraud model by repeated querying.</li>
+</ul>
+<h3>11.5 White-label / infrastructure licensing (§5.7 item 8)</h3>
+<ul>
+<li><strong>Default: hosted white-label.</strong> The licensee gets a branded subdomain/config calling the hosted API — no code ever leaves the platform's infrastructure. This avoids IP leakage by construction, not by contract enforcement.</li>
+<li><strong>On-prem/source-available</strong> is reserved for large enterprise deals where hosted genuinely isn't acceptable, priced high enough that it's rarely the path of least resistance. If ever used: source-available-not-redistributable terms, a no-derivative-competing-product clause, audit rights, and the highest-value modules (ranking weights, fraud model) either shipped compiled/obfuscated or still calling back to the platform's API for actual inference — never a fully offline-capable copy.</li>
+</ul>
+<h3>11.6 Trademark &amp; patents</h3>
+<ul>
+<li>Register the product/brand name as a trademark early — cheap relative to the protection it provides against copycats or white-label licensees implying affiliation.</li>
+<li>Patents are a &quot;maybe, later&quot;: only worth pursuing if a specific mechanism (a particular attribution method or fraud-scoring approach) is genuinely novel and the cost is justified. Consult an IP attorney before investing here — not a V1–V4 priority.</li>
+</ul>
+
+</body></html>

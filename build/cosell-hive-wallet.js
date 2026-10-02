@@ -1,0 +1,1 @@
+(()=>{"use strict";const e=window.React,t=window.wp.element,l=document.getElementById("cosell-hive-root");l&&"cosell-hive-wallet"===l.dataset.page&&(0,t.createRoot)(l).render((0,e.createElement)("p",null,"Wallet — Phase 5."))})();
