@@ -18,6 +18,8 @@ $options = array(
 	'cosell_hive_license_status',
 	'cosell_hive_site_role',
 	'cosell_hive_onboarded',
+	'cosell_hive_hub_site_id',
+	'cosell_hive_hub_secret',
 );
 
 foreach ( $options as $option ) {

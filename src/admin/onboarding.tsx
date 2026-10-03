@@ -5,6 +5,7 @@ import type { CSSProperties, FormEvent } from 'react';
 type Status = {
 	connected: boolean;
 	site_role: string;
+	hub: boolean;
 	entitlements: {
 		tier: string;
 		listed_product_limit: number;
@@ -78,8 +79,9 @@ function Onboarding() {
 						fontSize: '13px',
 					} }
 				>
-					Connected · { status.entitlements.tier } tier · up to{' '}
-					{ status.entitlements.listed_product_limit } listings
+					Connected · { status.entitlements.tier } tier · up to{ ' ' }
+					{ status.entitlements.listed_product_limit } listings ·{ ' ' }
+					{ status.hub ? 'hub' : 'local mock' }
 				</p>
 			) }
 			<form onSubmit={ submit }>

@@ -113,6 +113,7 @@ class OnboardingController {
 			array(
 				'connected'    => is_array( $stored ) && isset( $stored['key'] ),
 				'site_role'    => get_option( 'cosell_hive_site_role', '' ),
+				'hub'          => '' !== get_option( 'cosell_hive_hub_site_id', '' ),
 				'entitlements' => $this->plugin->hub->get_entitlements(),
 			)
 		);
@@ -154,12 +155,73 @@ class OnboardingController {
 		update_option( 'cosell_hive_site_role', $role );
 		update_option( 'cosell_hive_onboarded', 1 );
 
+		$this->maybe_register_hub();
+
 		return rest_ensure_response(
 			array(
 				'connected'    => true,
 				'site_role'    => $role,
+				'hub'          => '' !== get_option( 'cosell_hive_hub_site_id', '' ),
 				'entitlements' => $this->plugin->hub->get_entitlements(),
 			)
 		);
+	}
+
+	/**
+	 * Register with the hub when a signup token is configured.
+	 *
+	 * Never breaks activation: failures are silent and the mock
+	 * client keeps everything working locally.
+	 *
+	 * @return void
+	 */
+	private function maybe_register_hub() {
+		/**
+		 * Filter the hub signup token (distributed out of band).
+		 * Empty = stay on the local mock client.
+		 *
+		 * @param string $token Signup token.
+		 */
+		$token = apply_filters( 'cosell_hive_hub_signup_token', '' );
+
+		if ( '' === $token || '' !== get_option( 'cosell_hive_hub_site_id', '' ) ) {
+			return;
+		}
+
+		/**
+		 * Filter the hub API base URL (no trailing /v1 — added here).
+		 *
+		 * @param string $base Base URL.
+		 */
+		$base = untrailingslashit( apply_filters( 'cosell_hive_hub_base', 'https://api.cosellhive.com' ) );
+
+		$response = wp_remote_post(
+			$base . '/v1/sites/register',
+			array(
+				'timeout' => 15,
+				'headers' => array(
+					'Content-Type'  => 'application/json',
+					'Authorization' => 'Bearer ' . $token,
+				),
+				'body'    => wp_json_encode(
+					array(
+						'site_url' => home_url(),
+					)
+				),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return;
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! is_array( $data ) || empty( $data['site_id'] ) || empty( $data['install_secret'] ) ) {
+			return;
+		}
+
+		update_option( 'cosell_hive_hub_site_id', sanitize_text_field( $data['site_id'] ) );
+		update_option( 'cosell_hive_hub_secret', sanitize_text_field( $data['install_secret'] ) );
 	}
 }

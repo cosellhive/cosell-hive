@@ -10,6 +10,8 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 ## Track B — SaaS hub (separate private repo)
 
 > Lives at `CoSellHive/cosell-hive-hub` (proprietary, NestJS API + BullMQ workers + Postgres + Next.js console). Full plan: hub repo `HUB_PLAN.md`. Entry gate: **H0 contract freeze** (`packages/contracts/openapi.yaml`) — plugin `MockHubClient` conforms to it, then one adapter swap connects staging. Plugin V1 loop finishes against the mock in parallel.
+>
+> H2 hub status: reconcile worker, payouts, console queues, and the plugin staging adapter (`RestHubClient`, `docs/features/06-staging-adapter.md`) are DONE. Staging needs Supabase + Fly provisioned.
 
 ---
 

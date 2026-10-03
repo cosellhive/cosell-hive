@@ -19,6 +19,9 @@ class HubClientFactory {
 	/**
 	 * Create the hub client.
 	 *
+	 * REST wins automatically once the site registers (site ID + secret
+	 * stored by onboarding); otherwise the mock keeps local dev working.
+	 *
 	 * @return HubClientInterface
 	 */
 	public static function create() {
@@ -27,7 +30,13 @@ class HubClientFactory {
 		 *
 		 * @param string $class Fully-qualified class name.
 		 */
-		$class = apply_filters( 'cosell_hive_hub_client_class', MockHubClient::class );
+		$class = apply_filters( 'cosell_hive_hub_client_class', '' );
+
+		if ( '' === $class ) {
+			$site_id = get_option( 'cosell_hive_hub_site_id', '' );
+			$secret  = get_option( 'cosell_hive_hub_secret', '' );
+			$class   = ( '' !== $site_id && '' !== $secret ) ? RestHubClient::class : MockHubClient::class;
+		}
 
 		if ( ! class_exists( $class ) ) {
 			$class = MockHubClient::class;
