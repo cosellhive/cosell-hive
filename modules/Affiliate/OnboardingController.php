@@ -80,7 +80,7 @@ class OnboardingController {
 				'permission_callback' => array( $this, 'can_onboard' ),
 				'args'                => array(
 					'key'  => array(
-						'required'          => true,
+						'default'           => '',
 						'sanitize_callback' => 'sanitize_text_field',
 					),
 					'role' => array(
@@ -128,34 +128,24 @@ class OnboardingController {
 	public function activate( \WP_REST_Request $request ) {
 		$key = substr( sanitize_text_field( $request->get_param( 'key' ) ), 0, 128 );
 
-		if ( '' === $key ) {
-			return new \WP_Error(
-				'cosell_hive_missing_key',
-				__( 'Enter a license key.', 'cosell-hive' ),
-				array( 'status' => 400 )
-			);
-		}
-
 		$role = $request->get_param( 'role' );
 
 		if ( ! in_array( $role, array( 'store', 'affiliate', '' ), true ) ) {
 			$role = '';
 		}
 
-		$result = $this->license->activate( $key );
+		$this->maybe_register_hub();
 
-		if ( ! isset( $result['valid'] ) || ! $result['valid'] ) {
-			return new \WP_Error(
-				'cosell_hive_invalid_key',
-				__( 'This license key was not accepted.', 'cosell-hive' ),
-				array( 'status' => 400 )
-			);
+		if ( '' !== $key ) {
+			$result = $this->license->activate( $key );
+
+			if ( ! is_wp_error( $result ) && isset( $result['valid'] ) && $result['valid'] ) {
+				update_option( 'cosell_hive_license', array( 'key' => $key ) );
+			}
 		}
 
 		update_option( 'cosell_hive_site_role', $role );
 		update_option( 'cosell_hive_onboarded', 1 );
-
-		$this->maybe_register_hub();
 
 		return rest_ensure_response(
 			array(
@@ -170,15 +160,15 @@ class OnboardingController {
 	/**
 	 * Register with the hub when a signup token is configured.
 	 *
-	 * Never breaks activation: failures are silent and the mock
-	 * client keeps everything working locally.
+	 * Never breaks onboarding: failures are silent and the site
+	 * continues with free-tier defaults.
 	 *
 	 * @return void
 	 */
 	private function maybe_register_hub() {
 		/**
 		 * Filter the hub signup token (distributed out of band).
-		 * Empty = stay on the local mock client.
+		 * Empty = skip hub registration and use free-tier defaults.
 		 *
 		 * @param string $token Signup token.
 		 */

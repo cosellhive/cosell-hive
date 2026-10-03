@@ -73,10 +73,12 @@ class Heartbeat {
 
 		$result = $this->plugin->license->validate();
 
+		$valid = ! is_wp_error( $result ) && isset( $result['valid'] ) ? (bool) $result['valid'] : false;
+
 		update_option(
 			'cosell_hive_license_status',
 			array(
-				'valid'       => isset( $result['valid'] ) ? (bool) $result['valid'] : false,
+				'valid'       => $valid,
 				'checked_at'  => current_time( 'mysql' ),
 			)
 		);

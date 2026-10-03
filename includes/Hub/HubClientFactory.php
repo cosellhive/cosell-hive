@@ -19,8 +19,8 @@ class HubClientFactory {
 	/**
 	 * Create the hub client.
 	 *
-	 * REST wins automatically once the site registers (site ID + secret
-	 * stored by onboarding); otherwise the mock keeps local dev working.
+	 * The REST adapter is the default. The mock is reachable only in
+	 * debug mode via an explicit constant.
 	 *
 	 * @return HubClientInterface
 	 */
@@ -33,19 +33,21 @@ class HubClientFactory {
 		$class = apply_filters( 'cosell_hive_hub_client_class', '' );
 
 		if ( '' === $class ) {
-			$site_id = get_option( 'cosell_hive_hub_site_id', '' );
-			$secret  = get_option( 'cosell_hive_hub_secret', '' );
-			$class   = ( '' !== $site_id && '' !== $secret ) ? RestHubClient::class : MockHubClient::class;
+			$class = RestHubClient::class;
+
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'COSELL_HIVE_USE_MOCK_HUB' ) && COSELL_HIVE_USE_MOCK_HUB ) {
+				$class = MockHubClient::class;
+			}
 		}
 
 		if ( ! class_exists( $class ) ) {
-			$class = MockHubClient::class;
+			$class = RestHubClient::class;
 		}
 
 		$client = new $class();
 
 		if ( ! $client instanceof HubClientInterface ) {
-			$client = new MockHubClient();
+			$client = new RestHubClient();
 		}
 
 		return $client;

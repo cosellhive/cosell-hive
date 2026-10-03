@@ -9,7 +9,7 @@ namespace CoSellHive\Core;
 
 use CoSellHive\Admin\Menu;
 use CoSellHive\Hub\HubClientFactory;
-use CoSellHive\License\StubLicenseClient;
+use CoSellHive\License\LicenseClientFactory;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -128,7 +128,7 @@ final class Plugin {
 	 */
 	private function instantiate() {
 		$this->container['hub']     = HubClientFactory::create();
-		$this->container['license'] = new StubLicenseClient();
+		$this->container['license'] = LicenseClientFactory::create();
 
 		$installer = new Installer();
 		$installer->register();

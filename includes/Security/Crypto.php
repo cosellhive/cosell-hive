@@ -12,9 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * AES-256-CBC with per-message IVs. The key derives from the site's
- * unique salts (never stored in the DB), so a DB leak alone exposes
- * nothing — but rotating salts orphans stored details by design.
+ * AES-256-GCM with a random nonce and authentication tag. The key derives
+ * from the site's unique salts (never stored in the DB), so a DB leak
+ * alone exposes nothing — but rotating salts orphans stored details by
+ * design.
  */
 final class Crypto {
 
@@ -53,17 +54,18 @@ final class Crypto {
 			);
 		}
 
-		$iv = random_bytes( 16 );
-		$ct = openssl_encrypt( $plain, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv );
+		$nonce = random_bytes( 12 );
+		$tag   = '';
+		$ct    = openssl_encrypt( $plain, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $nonce, $tag );
 
-		if ( false === $ct ) {
+		if ( false === $ct || '' === $tag ) {
 			return new \WP_Error(
 				'cosell_hive_encrypt_failed',
 				__( 'Could not secure payout details. Try again.', 'cosell-hive' )
 			);
 		}
 
-		return base64_encode( $iv . $ct ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		return base64_encode( $nonce . $tag . $ct ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 	}
 
 	/**
@@ -84,14 +86,18 @@ final class Crypto {
 
 		$raw = base64_decode( $payload, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 
-		if ( false === $raw || strlen( $raw ) < 17 ) {
+		if ( false === $raw || strlen( $raw ) < 29 ) {
 			return new \WP_Error(
 				'cosell_hive_decrypt_failed',
 				__( 'Stored payout details are unreadable.', 'cosell-hive' )
 			);
 		}
 
-		$plain = openssl_decrypt( substr( $raw, 16 ), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, substr( $raw, 0, 16 ) );
+		$nonce = substr( $raw, 0, 12 );
+		$tag   = substr( $raw, 12, 16 );
+		$ct    = substr( $raw, 28 );
+
+		$plain = openssl_decrypt( $ct, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $nonce, $tag );
 
 		if ( false === $plain ) {
 			return new \WP_Error(
