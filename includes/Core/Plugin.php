@@ -68,12 +68,6 @@ final class Plugin {
 	 * @return void
 	 */
 	private function setup() {
-		register_activation_hook( COSELL_HIVE_FILE, array( $this, 'auto_deactivate' ) );
-
-		if ( ! $this->is_supported_php() ) {
-			return;
-		}
-
 		$this->includes();
 		$this->instantiate();
 		$this->load_modules();
@@ -116,28 +110,6 @@ final class Plugin {
 	 */
 	public function is_supported_php() {
 		return version_compare( PHP_VERSION, $this->min_php, '>=' );
-	}
-
-	/**
-	 * Deactivate on unsupported PHP.
-	 *
-	 * @return void
-	 */
-	public function auto_deactivate() {
-		if ( $this->is_supported_php() ) {
-			return;
-		}
-
-		deactivate_plugins( plugin_basename( COSELL_HIVE_FILE ) );
-
-		wp_die(
-			esc_html__( 'CoSellHive requires PHP 7.4 or greater.', 'cosell-hive' ),
-			esc_html__( 'Plugin Activation Error', 'cosell-hive' ),
-			array(
-				'response'  => 200,
-				'back_link' => true,
-			)
-		);
 	}
 
 	/**

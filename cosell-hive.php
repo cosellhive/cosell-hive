@@ -36,37 +36,94 @@ define( 'COSELL_HIVE_MODULES', COSELL_HIVE_PATH . '/modules' );
 define( 'COSELL_HIVE_URL', plugins_url( '', COSELL_HIVE_FILE ) );
 define( 'COSELL_HIVE_ASSETS', COSELL_HIVE_URL . '/assets' );
 define( 'COSELL_HIVE_MIN_PHP', '8.1' );
+define( 'COSELL_HIVE_MIN_WP', '6.3' );
 define( 'COSELL_HIVE_DB_VERSION', '1.0.0' );
 
 /**
  * Initialize the plugin.
  *
- * @return Plugin
+ * @return Plugin|null
  */
 function cosell_hive() {
+	if ( ! class_exists( Plugin::class ) ) {
+		return null;
+	}
+
 	return Plugin::init();
 }
 
-add_action(
-	'plugins_loaded',
-	function () {
-		cosell_hive();
-	},
-	1
-);
-
-register_activation_hook(
-	__FILE__,
-	function () {
-		$installer = new Installer();
-		$installer->activate();
+/**
+ * Render a bootstrap failure notice.
+ *
+ * @return void
+ */
+function cosell_hive_bootstrap_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
 	}
-);
 
-register_deactivation_hook(
-	__FILE__,
-	function () {
-		$installer = new Installer();
-		$installer->deactivate();
+	echo '<div class="notice notice-error"><p>' . esc_html__( 'CoSellHive could not load its files. Please reinstall the plugin.', 'cosell-hive' ) . '</p></div>';
+}
+
+/**
+ * Guard the runtime environment before booting.
+ *
+ * @return bool
+ */
+function cosell_hive_environment_supported() {
+	global $wp_version;
+
+	if ( version_compare( PHP_VERSION, COSELL_HIVE_MIN_PHP, '<' ) ) {
+		return false;
 	}
-);
+
+	if ( isset( $wp_version ) && version_compare( $wp_version, COSELL_HIVE_MIN_WP, '<' ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Boot the plugin on plugins_loaded.
+ *
+ * @return void
+ */
+function cosell_hive_bootstrap() {
+	if ( ! cosell_hive_environment_supported() ) {
+		add_action( 'admin_notices', 'cosell_hive_bootstrap_notice' );
+		return;
+	}
+
+	if ( ! class_exists( Plugin::class ) ) {
+		add_action( 'admin_notices', 'cosell_hive_bootstrap_notice' );
+		return;
+	}
+
+	cosell_hive();
+}
+
+/**
+ * Activation callback.
+ *
+ * @return void
+ */
+function cosell_hive_activate() {
+	$installer = new Installer();
+	$installer->activate();
+}
+
+/**
+ * Deactivation callback.
+ *
+ * @return void
+ */
+function cosell_hive_deactivate() {
+	$installer = new Installer();
+	$installer->deactivate();
+}
+
+add_action( 'plugins_loaded', 'cosell_hive_bootstrap', 1 );
+
+register_activation_hook( __FILE__, 'cosell_hive_activate' );
+register_deactivation_hook( __FILE__, 'cosell_hive_deactivate' );

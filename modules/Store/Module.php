@@ -66,6 +66,8 @@ class Module {
 		$reconciler = new \CoSellHive\Tracking\Reconciler();
 		$reconciler->register();
 
+		add_action( 'admin_notices', array( $this, 'maybe_render_woocommerce_notice' ) );
+
 		if ( $this->is_woo_active() ) {
 			$this->product_meta->register();
 			$this->sync->register();
@@ -81,6 +83,22 @@ class Module {
 	 */
 	public function is_woo_active() {
 		return class_exists( 'WooCommerce' ) && function_exists( 'wc_get_product' );
+	}
+
+	/**
+	 * Show a clear notice when store features are unavailable.
+	 *
+	 * @return void
+	 */
+	public function maybe_render_woocommerce_notice() {
+		if ( $this->is_woo_active() || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-info"><p>%s</p></div>',
+			esc_html__( 'CoSellHive store features require WooCommerce. Affiliate browsing, links, and wallet features continue to work without it.', 'cosell-hive' )
+		);
 	}
 
 	/**
