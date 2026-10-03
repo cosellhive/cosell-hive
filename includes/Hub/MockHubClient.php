@@ -66,4 +66,40 @@ class MockHubClient implements HubClientInterface {
 			'analytics_depth'      => 'basic',
 		);
 	}
+
+	/**
+	 * Rank live listings (mock: no ranking, caller keeps local order).
+	 *
+	 * @param string $niche Niche description.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function rank_feed( $niche, $limit = 20 ) {
+		return array();
+	}
+
+	/**
+	 * Semantic search (mock: no results, caller falls back to local search).
+	 *
+	 * @param string $query Search text.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function search_feed( $query, $limit = 20 ) {
+		return array();
+	}
+
+	/**
+	 * Generate marketing copy (mock: clearly-labeled template).
+	 *
+	 * @param string $ref  Listing ref.
+	 * @param string $tone Optional tone.
+	 * @return array
+	 */
+	public function generate_copy( $ref, $tone = '' ) {
+		return array(
+			'blurb'   => __( 'Mock copy: connect the hub for AI-written blurbs tailored to your audience.', 'cosell-hive' ),
+			'caption' => __( 'Mock caption: hub-generated social text appears here.', 'cosell-hive' ),
+		);
+	}
 }

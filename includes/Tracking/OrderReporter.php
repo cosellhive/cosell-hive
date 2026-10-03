@@ -164,6 +164,8 @@ class OrderReporter {
 				'amount_minor'      => (int) round( (float) $total * 100 ),
 				'currency'          => method_exists( $order, 'get_currency' ) ? $order->get_currency() : '',
 				'timestamp'         => time(),
+				'is_cod'            => $this->is_cod( $order ),
+				'buyer_ref'         => $this->buyer_ref( $order ),
 			)
 		);
 
@@ -189,5 +191,40 @@ class OrderReporter {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Whether the order was placed cash-on-delivery.
+	 *
+	 * @param object $order Order object.
+	 * @return bool
+	 */
+	private function is_cod( $order ) {
+		if ( ! method_exists( $order, 'get_payment_method' ) ) {
+			return false;
+		}
+
+		return 'cod' === $order->get_payment_method();
+	}
+
+	/**
+	 * Buyer reference: one-way hash of the billing email for future
+	 * self-referral analysis. Never the raw address.
+	 *
+	 * @param object $order Order object.
+	 * @return string
+	 */
+	private function buyer_ref( $order ) {
+		if ( ! method_exists( $order, 'get_billing_email' ) ) {
+			return '';
+		}
+
+		$email = strtolower( trim( $order->get_billing_email() ) );
+
+		if ( '' === $email ) {
+			return '';
+		}
+
+		return hash( 'sha256', $email );
 	}
 }

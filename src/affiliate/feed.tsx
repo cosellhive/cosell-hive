@@ -17,27 +17,52 @@ function MarketplaceFeed() {
 	const [ items, setItems ] = useState< FeedItem[] >( [] );
 	const [ search, setSearch ] = useState< string >( '' );
 	const [ min, setMin ] = useState< string >( '' );
+	const [ recommended, setRecommended ] = useState< boolean >( false );
+	const [ niche, setNiche ] = useState< string >(
+		() => window.localStorage.getItem( 'cosell_hive_niche' ) ?? ''
+	);
+	const [ source, setSource ] = useState< string >( '' );
 	const [ error, setError ] = useState< string | null >( null );
 	const [ loaded, setLoaded ] = useState< boolean >( false );
 
 	useEffect( () => {
-		const params = new URLSearchParams();
-		if ( search ) {
-			params.set( 'search', search );
+		let path: string;
+		let options: object | undefined;
+		if ( recommended && niche ) {
+			path = '/cosell-hive/v1/recommendations';
+			options = { method: 'POST', data: { niche } };
+		} else if ( search ) {
+			const params = new URLSearchParams( { q: search } );
+			path = `/cosell-hive/v1/nl-search?${ params.toString() }`;
+		} else {
+			const params = new URLSearchParams();
+			if ( min ) {
+				params.set( 'min_commission', min );
+			}
+			const query = params.toString();
+			path = `/cosell-hive/v1/feed${ query ? `?${ query }` : '' }`;
 		}
-		if ( min ) {
-			params.set( 'min_commission', min );
-		}
-		const query = params.toString();
-		apiFetch< { items: FeedItem[] } >( {
-			path: `/cosell-hive/v1/feed${ query ? `?${ query }` : '' }`,
-		} )
+		apiFetch< { items: FeedItem[]; source?: string } >( { path, ...options } )
 			.then( ( res ) => {
-				setItems( res.items );
+				let list = res.items;
+				if ( search && min ) {
+					list = list.filter(
+						( i ) =>
+							i.commission.value !== '' &&
+							parseFloat( i.commission.value ) >= parseFloat( min )
+					);
+				}
+				setItems( list );
+				setSource( res.source ?? '' );
 				setLoaded( true );
 			} )
 			.catch( () => setError( 'Could not load the marketplace.' ) );
-	}, [ search, min ] );
+	}, [ search, min, recommended, niche ] );
+
+	const saveNiche = ( value: string ) => {
+		setNiche( value );
+		window.localStorage.setItem( 'cosell_hive_niche', value );
+	};
 
 	const addToLinks = ( id: number ) => {
 		window.location.href = `admin.php?page=cosell-hive-links&listing=${ id }`;
@@ -58,10 +83,10 @@ function MarketplaceFeed() {
 
 	return (
 		<div>
-			<div style={ { display: 'flex', gap: '8px', marginBottom: '16px' } }>
+			<div style={ { display: 'flex', gap: '8px', marginBottom: '12px' } }>
 				<input
 					type="search"
-					placeholder="Search products or commission range"
+					placeholder="Search products or describe intent"
 					value={ search }
 					onChange={ ( e ) => setSearch( e.target.value ) }
 					style={ { flex: 1 } }
@@ -78,19 +103,47 @@ function MarketplaceFeed() {
 					<option value="20">20%+ / $20+</option>
 				</select>
 			</div>
-			{ loaded && items.length === 0 && (
-				<p>
-					No live listings match. Approved products appear here for
-					promotion.
-				</p>
-			) }
 			<div
 				style={ {
 					display: 'flex',
-					gap: '12px',
-					flexWrap: 'wrap',
+					gap: '8px',
+					alignItems: 'center',
+					marginBottom: '16px',
 				} }
 			>
+				<label style={ { fontSize: '13px' } }>
+					<input
+						type="checkbox"
+						checked={ recommended }
+						onChange={ ( e ) => setRecommended( e.target.checked ) }
+					/>{ ' ' }
+					Recommended for you
+				</label>
+				{ recommended && (
+					<input
+						type="text"
+						placeholder="Describe your audience niche"
+						value={ niche }
+						onChange={ ( e ) => saveNiche( e.target.value ) }
+						style={ { flex: 1 } }
+						className="regular-text"
+						aria-label="Audience niche"
+					/>
+				) }
+				{ source === 'hub' && (
+					<span style={ { fontSize: '12px', color: '#185FA5' } }>
+						AI-ranked
+					</span>
+				) }
+			</div>
+			{ loaded && items.length === 0 && (
+				<p>
+					{ recommended && ! niche
+						? 'Describe your niche to get recommendations.'
+						: 'No live listings match. Approved products appear here for promotion.' }
+				</p>
+			) }
+			<div style={ { display: 'flex', gap: '12px', flexWrap: 'wrap' } }>
 				{ items.map( ( item ) => (
 					<div key={ item.id } style={ cardStyle }>
 						{ item.image ? (
@@ -123,31 +176,13 @@ function MarketplaceFeed() {
 								IMG
 							</div>
 						) }
-						<p
-							style={ {
-								fontSize: '14px',
-								fontWeight: 600,
-								margin: '0 0 2px',
-							} }
-						>
+						<p style={ { fontSize: '14px', fontWeight: 600, margin: '0 0 2px' } }>
 							{ item.title }
 						</p>
-						<p
-							style={ {
-								fontSize: '12px',
-								color: '#5f5e5a',
-								margin: '0 0 10px',
-							} }
-						>
+						<p style={ { fontSize: '12px', color: '#5f5e5a', margin: '0 0 10px' } }>
 							{ item.store } · { item.price_display }
 						</p>
-						<div
-							style={ {
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center',
-							} }
-						>
+						<div style={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }>
 							<span
 								style={ {
 									fontSize: '12px',
@@ -159,11 +194,7 @@ function MarketplaceFeed() {
 							>
 								{ item.commission.label }
 							</span>
-							<button
-								className="button"
-								onClick={ () => addToLinks( item.id ) }
-								aria-label={ `Promote ${ item.title }` }
-							>
+							<button className="button" onClick={ () => addToLinks( item.id ) } aria-label={ `Promote ${ item.title }` }>
 								+
 							</button>
 						</div>

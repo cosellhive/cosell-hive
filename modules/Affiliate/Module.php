@@ -47,6 +47,12 @@ class Module {
 		$onboarding = new OnboardingController( $plugin );
 		$onboarding->register();
 
+		$discovery = new DiscoveryController( $plugin );
+		$discovery->register();
+
+		$copy = new CopyController( $plugin );
+		$copy->register();
+
 		$card = new ProductCard();
 		$card->register();
 

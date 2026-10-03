@@ -46,4 +46,31 @@ interface HubClientInterface {
 	 * @return array
 	 */
 	public function get_entitlements();
+
+	/**
+	 * Rank live listings for a niche. Returns id+rank only.
+	 *
+	 * @param string $niche Niche description.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function rank_feed( $niche, $limit = 20 );
+
+	/**
+	 * Semantic search over live listings.
+	 *
+	 * @param string $query Search text.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function search_feed( $query, $limit = 20 );
+
+	/**
+	 * Generate marketing copy for a hub listing ref.
+	 *
+	 * @param string $ref   Listing ref.
+	 * @param string $tone  Optional tone.
+	 * @return array{blurb: string, caption: string}
+	 */
+	public function generate_copy( $ref, $tone = '' );
 }

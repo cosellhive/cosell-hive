@@ -131,11 +131,13 @@ class RestHubClient implements HubClientInterface {
 				'order_id'          => isset( $payload['order_id'] ) ? absint( $payload['order_id'] ) : 0,
 				'attribution_token' => isset( $payload['attribution_token'] ) ? sanitize_text_field( $payload['attribution_token'] ) : '',
 				'status'            => isset( $payload['status'] ) ? sanitize_key( $payload['status'] ) : '',
-				'amount_minor'      => isset( $payload['amount_minor'] ) ? absint( $payload['amount_minor'] ) : 0,
-				'currency'          => isset( $payload['currency'] ) ? sanitize_text_field( $payload['currency'] ) : '',
-				'timestamp'         => time(),
-			)
-		);
+			'amount_minor'      => isset( $payload['amount_minor'] ) ? absint( $payload['amount_minor'] ) : 0,
+			'currency'          => isset( $payload['currency'] ) ? sanitize_text_field( $payload['currency'] ) : '',
+			'timestamp'         => time(),
+			'is_cod'            => ! empty( $payload['is_cod'] ),
+			'buyer_ref'         => isset( $payload['buyer_ref'] ) ? sanitize_text_field( $payload['buyer_ref'] ) : '',
+		)
+	);
 
 		return array(
 			'acknowledged' => ! empty( $result['acknowledged'] ),
@@ -179,6 +181,94 @@ class RestHubClient implements HubClientInterface {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Rank live listings for a niche.
+	 *
+	 * @param string $niche Niche description.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function rank_feed( $niche, $limit = 20 ) {
+		$result = $this->post(
+			'/feed/rank',
+			array(
+				'niche' => substr( sanitize_text_field( $niche ), 0, 200 ),
+				'limit' => absint( $limit ),
+			)
+		);
+
+		return isset( $result['items'] ) && is_array( $result['items'] ) ? $result['items'] : array();
+	}
+
+	/**
+	 * Semantic search over live listings.
+	 *
+	 * @param string $query Search text.
+	 * @param int    $limit Max items.
+	 * @return array
+	 */
+	public function search_feed( $query, $limit = 20 ) {
+		$creds = $this->credentials();
+
+		if ( '' === $creds['site_id'] || '' === $creds['secret'] ) {
+			return array();
+		}
+
+		$headers = Signature::headers( '', $creds['secret'] );
+
+		$response = wp_remote_get(
+			add_query_arg(
+				array(
+					'q'     => substr( sanitize_text_field( $query ), 0, 200 ),
+					'limit' => absint( $limit ),
+				),
+				$this->base() . '/v1/feed/search'
+			),
+			array(
+				'timeout' => 15,
+				'headers' => array(
+					'X-Site-Id'   => $creds['site_id'],
+					'X-Signature' => $headers['signature'],
+					'X-Timestamp' => $headers['timestamp'],
+				),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return array();
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		return isset( $data['items'] ) && is_array( $data['items'] ) ? $data['items'] : array();
+	}
+
+	/**
+	 * Generate marketing copy for a hub listing ref.
+	 *
+	 * @param string $ref  Listing ref.
+	 * @param string $tone Optional tone.
+	 * @return array
+	 */
+	public function generate_copy( $ref, $tone = '' ) {
+		$result = $this->post(
+			'/copy/generate',
+			array(
+				'listing_id' => sanitize_text_field( $ref ),
+				'tone'       => substr( sanitize_text_field( $tone ), 0, 60 ),
+			)
+		);
+
+		if ( empty( $result['blurb'] ) ) {
+			return ( new MockHubClient() )->generate_copy( $ref, $tone );
+		}
+
+		return array(
+			'blurb'   => sanitize_text_field( $result['blurb'] ),
+			'caption' => sanitize_text_field( $result['caption'] ),
+		);
 	}
 
 	/**

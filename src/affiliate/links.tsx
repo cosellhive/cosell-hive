@@ -31,6 +31,7 @@ function MyLinks() {
 	const [ selected, setSelected ] = useState< number | null >( null );
 	const [ style, setStyle ] = useState< string >( 'card' );
 	const [ link, setLink ] = useState< LinkResponse | null >( null );
+	const [ copy, setCopy ] = useState< { blurb: string; caption: string } | null >( null );
 	const [ copied, setCopied ] = useState< string | null >( null );
 	const [ error, setError ] = useState< string | null >( null );
 
@@ -57,6 +58,7 @@ function MyLinks() {
 			return;
 		}
 		setLink( null );
+		setCopy( null );
 		apiFetch< LinkResponse >( {
 			path: '/cosell-hive/v1/links',
 			method: 'POST',
@@ -238,20 +240,66 @@ function MyLinks() {
 					<p style={ { fontSize: '13px', margin: 0 } }>
 						Generate marketing copy
 					</p>
-					<p
-						style={ {
-							fontSize: '12px',
-							color: '#888780',
-							margin: 0,
-						} }
-					>
+					<p style={ { fontSize: '12px', color: '#888780', margin: 0 } }>
 						AI-written blurb and caption in your site&apos;s tone
 					</p>
 				</div>
-				<button className="button" disabled title="Coming in V2">
+				<button
+					className="button"
+					disabled={ selected === null }
+					onClick={ () => {
+						if ( selected === null ) {
+							return;
+						}
+						apiFetch< { blurb: string; caption: string } >( {
+							path: '/cosell-hive/v1/copy',
+							method: 'POST',
+							data: { listing_id: selected },
+						} )
+							.then( setCopy )
+							.catch( () => setError( 'Copy generation failed.' ) );
+					} }
+				>
 					Generate
 				</button>
 			</div>
+			{ copy && (
+				<div style={ { marginTop: '12px' } }>
+					<div
+						style={ {
+							background: '#fff',
+							border: '1px solid #e4e2da',
+							borderRadius: '8px',
+							padding: '12px',
+							marginBottom: '8px',
+						} }
+					>
+						<p style={ { fontSize: '12px', color: '#5f5e5a', margin: '0 0 4px' } }>
+							Blurb
+						</p>
+						<p style={ { fontSize: '13px', margin: '0 0 8px' } }>{ copy.blurb }</p>
+						<button className="button" onClick={ () => copyText( copy.blurb, () => setCopied( 'blurb' ) ) }>
+							{ copied === 'blurb' ? 'Copied' : 'Copy' }
+						</button>
+					</div>
+					<div
+						style={ {
+							background: '#fff',
+							border: '1px solid #e4e2da',
+							borderRadius: '8px',
+							padding: '12px',
+						} }
+					>
+						<p style={ { fontSize: '12px', color: '#5f5e5a', margin: '0 0 4px' } }>
+							Social caption
+						</p>
+						<p style={ { fontSize: '13px', margin: '0 0 8px' } }>{ copy.caption }</p>
+						<button className="button" onClick={ () => copyText( copy.caption, () => setCopied( 'caption' ) ) }>
+							{ copied === 'caption' ? 'Copied' : 'Copy' }
+						</button>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
