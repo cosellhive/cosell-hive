@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Owns the `/go/ch/<ref>/` route. Tokens are minted at click time
+ * Owns the `/go/cs-hive/<ref>/` route. Tokens are minted at click time
  * (never at render time) so cached pages can't share attribution.
  */
 class Redirector {
@@ -56,7 +56,7 @@ class Redirector {
 	 * @return void
 	 */
 	public function add_rewrite() {
-		add_rewrite_rule( '^go/ch/([^/]+)/?', 'index.php?' . self::QUERY_VAR . '=$matches[1]', 'top' );
+		add_rewrite_rule( '^go/cs-hive/([^/]+)/?', 'index.php?' . self::QUERY_VAR . '=$matches[1]', 'top' );
 	}
 
 	/**
@@ -85,13 +85,13 @@ class Redirector {
 		 *
 		 * @param string $base Base URL with trailing slash.
 		 */
-		$base = apply_filters( 'cosell_hive_go_base', home_url( '/go/ch/' ) );
+		$base = apply_filters( 'cosell_hive_go_base', home_url( '/go/cs-hive/' ) );
 
 		return esc_url_raw( trailingslashit( $base ) . rawurlencode( $ref ) . '/?a=' . absint( $affiliate_id ) );
 	}
 
 	/**
-	 * Handle go requests: resolve → mint token → redirect with `?ch_token=`.
+	 * Handle go requests: resolve → mint token → redirect with `?cs_hive_token=`.
 	 *
 	 * @return void
 	 */
@@ -147,7 +147,7 @@ class Redirector {
 			)
 		);
 
-		wp_safe_redirect( add_query_arg( 'ch_token', rawurlencode( $token ), get_permalink( $product_id ) ), 302 );
+		wp_safe_redirect( add_query_arg( 'cs_hive_token', rawurlencode( $token ), get_permalink( $product_id ) ), 302 );
 		exit;
 	}
 

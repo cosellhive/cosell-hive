@@ -2,7 +2,7 @@
 
 > Source: `plan/prd/CoSellHive — PRD.md` + 7 mockups in `plan/mockup-html/`.
 > Model: SaaS-minimal free connector on wp.org. Hub owns ledger/catalog/ranking. Tiers enforced API-side via entitlements.
-> Stack: PHP 7.4+ OOP (wp-erp-style singleton + container), React + TypeScript + Tailwind via `@wordpress/scripts`, PHPCS/WPCS, Composer PSR-4.
+> Stack: PHP 8.1+ OOP (wp-erp-style singleton + container), React + TypeScript + Tailwind via `@wordpress/scripts`, PHPCS/WPCS, Composer PSR-4.
 > Conventions: prefix `cosell_hive_` / `COSELL_HIVE_`, textdomain `cosell-hive`, slug `cosell-hive`, tables `wp_cosell_*`.
 
 Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
@@ -26,7 +26,7 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
   - [x] 0.1.4 `.gitignore` (vendor, node_modules, build maps) — no secrets in repo
 - [x] 0.2 Core PHP shell (no business logic)
   - [x] 0.2.1 `includes/Core/Plugin.php` — setup/install/includes/instantiate/actions/load_modules, `__get/__isset` container
-  - [x] 0.2.2 `includes/Core/Installer.php` — activate: roles `ch_store`/`ch_affiliate`, caps, DB version option, cron schedule; deactivate: clear cron
+  - [x] 0.2.2 `includes/Core/Installer.php` — activate: roles `cs_hive_store`/`cs_hive_affiliate`, caps, DB version option, cron schedule; deactivate: clear cron
   - [x] 0.2.3 `includes/Core/I18n.php` — `load_plugin_textdomain`
   - [x] 0.2.4 `includes/Hub/HubClientInterface.php` + `MockHubClient.php` + `HubClientFactory.php`
   - [x] 0.2.5 `includes/License/LicenseClientInterface.php` + `StubLicenseClient.php` (always valid locally, heartbeat no-op)
@@ -71,7 +71,7 @@ Progress legend: `[ ]` todo, `[x]` done. Update this file as tasks complete.
 > Status: DONE 2026-10-02 — clicks + commissions tables, token capture chain (session → cookie, window-validated), full state machine incl. COD rules + post-payout negative carry, daily cron (advance/expire/backfill), HMAC seam, live dashboard tiles. `phpcs`/smoke green. Feature doc: `docs/features/04-tracking-commissions.md`.
 
 - [x] 4.1 `wp_cosell_clicks`, `wp_cosell_commissions` tables + repositories
-- [x] 4.2 `/go/ch/<token>` redirector: hub `trackClick` → 302 to store URL + `?ch_token=`; cookie fallback, 30-day window, last-click
+- [x] 4.2 `/go/cs-hive/<token>` redirector: hub `trackClick` → 302 to store URL + `?cs_hive_token=`; cookie fallback, 30-day window, last-click
 - [x] 4.3 `OrderReporter`: `woocommerce_checkout_create_order` writes `_cosell_hive_token`; `woocommerce_order_status_changed` → signed `POST` (HMAC + timestamp, 5-min replay window)
 - [x] 4.4 `CommissionService` state machine (`pending→confirmed→holding→payable→paid`, `→reversed`); COD holds until `completed`; refund → `reversed`, post-payout → negative forward balance
 - [x] 4.5 `Reconciler` daily cron + escalation ladder (notice → auto-pause → suspend), tolerance for lag

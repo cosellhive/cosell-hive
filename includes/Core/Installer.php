@@ -58,7 +58,7 @@ class Installer {
 	 */
 	private function add_roles() {
 		add_role(
-			'ch_store',
+			'cs_hive_store',
 			__( 'CoSellHive Store', 'cosell-hive' ),
 			array(
 				'read'              => true,
@@ -67,7 +67,7 @@ class Installer {
 		);
 
 		add_role(
-			'ch_affiliate',
+			'cs_hive_affiliate',
 			__( 'CoSellHive Affiliate', 'cosell-hive' ),
 			array(
 				'read'                  => true,
@@ -93,8 +93,43 @@ class Installer {
 	public function maybe_upgrade() {
 		if ( COSELL_HIVE_DB_VERSION !== get_option( 'cosell_hive_db_version' ) ) {
 			$this->create_tables();
+			$this->migrate_legacy_prefixes();
 			update_option( 'cosell_hive_db_version', COSELL_HIVE_DB_VERSION );
 		}
+	}
+
+	/**
+	 * Migrate legacy `ch_` roles/capabilities/options to `cs_hive_`.
+	 *
+	 * Idempotent; safe to run on every DB version bump.
+	 *
+	 * @return void
+	 */
+	public function migrate_legacy_prefixes() {
+		$this->add_roles();
+
+		$roles = array(
+			'ch_store'     => 'cs_hive_store',
+			'ch_affiliate' => 'cs_hive_affiliate',
+		);
+
+		foreach ( get_users( array( 'fields' => array( 'ID' ) ) ) as $user_id ) {
+			$user = get_userdata( $user_id );
+
+			if ( ! $user instanceof \WP_User ) {
+				continue;
+			}
+
+			foreach ( $roles as $old => $new ) {
+				if ( in_array( $old, (array) $user->roles, true ) ) {
+					$user->add_role( $new );
+					$user->remove_role( $old );
+				}
+			}
+		}
+
+		remove_role( 'ch_store' );
+		remove_role( 'ch_affiliate' );
 	}
 
 	/**

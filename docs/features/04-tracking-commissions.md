@@ -8,7 +8,7 @@ Closes the money loop on the store side. Affiliate clicks are logged locally wit
 
 ## How it flows
 
-1. Visitor clicks an affiliate link → `/go/ch/<ref>/` mints a hub token, stores a click row (`token, product, affiliate, ip/ua hashes`), sets a 30-day `HttpOnly + SameSite=Lax` cookie, and 302s to the product page with `?ch_token=`.
+1. Visitor clicks an affiliate link → `/go/cs-hive/<ref>/` mints a hub token, stores a click row (`token, product, affiliate, ip/ua hashes`), sets a 30-day `HttpOnly + SameSite=Lax` cookie, and 302s to the product page with `?cs_hive_token=`.
 2. At checkout the token is captured into the Woo session (cookie as fallback) and written to order meta `_cosell_hive_token` — but only if the token exists in the click ledger and is inside the attribution window.
 3. On creation the order gets a `pending` commission row. On `processing`/`on-hold`/`completed` it moves to `holding` with `holding_until = now + holding_days` (default 7, filter `cosell_hive_setting_holding_days`). **COD stays `pending` until `completed`.**
 4. The daily `cosell_hive_daily_maintenance` cron moves elapsed holdings to `payable` and reverses COD pendings older than `cod_expiry_days` (default 30).

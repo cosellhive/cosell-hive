@@ -60,7 +60,7 @@ class OrderReporter {
 	}
 
 	/**
-	 * Capture `?ch_token=` into session + cookie (last-click wins).
+	 * Capture `?cs_hive_token=` into session + cookie (last-click wins).
 	 *
 	 * @return void
 	 */
@@ -69,11 +69,11 @@ class OrderReporter {
 			return;
 		}
 
-		if ( ! isset( $_GET['ch_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET['cs_hive_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
-		$token = substr( sanitize_text_field( wp_unslash( $_GET['ch_token'] ) ), 0, 128 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$token = substr( sanitize_text_field( wp_unslash( $_GET['cs_hive_token'] ) ), 0, 128 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( '' === $token ) {
 			return;

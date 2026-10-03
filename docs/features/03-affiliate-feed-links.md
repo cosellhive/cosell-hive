@@ -4,14 +4,14 @@ Maps to mockups **03 (marketplace feed)** and **06 (tracked links & embed genera
 
 ## What it does
 
-Approved (`live`) listings become promotable. Affiliates browse a searchable feed, generate a tracked link per product, and embed products on their own sites via shortcode or Gutenberg block. Clicks resolve through a local `/go/ch/<ref>/` redirector that mints the tracking token **at click time** and lands the visitor on the store's product page with `?ch_token=`.
+Approved (`live`) listings become promotable. Affiliates browse a searchable feed, generate a tracked link per product, and embed products on their own sites via shortcode or Gutenberg block. Clicks resolve through a local `/go/cs-hive/<ref>/` redirector that mints the tracking token **at click time** and lands the visitor on the store's product page with `?cs_hive_token=`.
 
 ## How to use it
 
 1. Open **CoSellHive → Marketplace**. Search, filter by minimum commission, and click **+** on any card to jump to link generation for that product.
 2. Open **CoSellHive → My Links**. Pick a product: the tracked link is minted via the hub and shown with a **Copy** button.
 3. Pick an embed style (**Product card / Text link / Banner**). Copy the generated shortcode — your affiliate ID is baked in — and paste it into any post or page. Or add the **CoSellHive Product** block and enter the same listing ID + affiliate ID.
-4. Visitors clicking through hit `/go/ch/<ref>/?a=<affiliate>`, get a fresh token, and land on the product page. Checkout stays on the store (order attribution lands in Phase 4).
+4. Visitors clicking through hit `/go/cs-hive/<ref>/?a=<affiliate>`, get a fresh token, and land on the product page. Checkout stays on the store (order attribution lands in Phase 4).
 
 Only `live` listings render anywhere: the feed, link minting, shortcode, and block all refuse anything else (shortcode fails safe to an HTML comment, the redirector lets WP 404).
 
@@ -32,8 +32,8 @@ A token baked into page HTML would be shared by every visitor (and every cache l
 
 **Block:** `cosell-hive/product-card` (`blocks/product-card/block.json`), dynamic/server-rendered through the same renderer, editor script built as `cosell-hive-product-card.js`.
 
-**Redirect:** rewrite `^go/ch/([^/]+)/?` → `?cosell_go=$1`, handled on `template_redirect`. Base URL is filterable via `cosell_hive_go_base` — swap to the hub `go.*` domain when it exists without touching callers.
+**Redirect:** rewrite `^go/cs-hive/([^/]+)/?` → `?cosell_go=$1`, handled on `template_redirect`. Base URL is filterable via `cosell_hive_go_base` — swap to the hub `go.*` domain when it exists without touching callers.
 
 **Files:** `modules/Affiliate/{Module,FeedController,LinksController}.php`, `includes/{Marketplace/ListingPresenter,Shortcodes/ProductCard,Tracking/Redirector}.php`, `includes/Repository/ListingRepository.php` (`find_by_product_id`), `src/affiliate/{feed,links}.tsx`, `src/blocks/product-card/`, `assets/css/frontend.css` (enqueued only when an embed is present).
 
-**Verify:** `composer lint` · `npx tsc --noEmit` · `npm run build` · approve a listing, open the feed as a subscriber, mint a link, paste the shortcode on a page, click through and confirm `?ch_token=` on the product URL.
+**Verify:** `composer lint` · `npx tsc --noEmit` · `npm run build` · approve a listing, open the feed as a subscriber, mint a link, paste the shortcode on a page, click through and confirm `?cs_hive_token=` on the product URL.
