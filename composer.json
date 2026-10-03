@@ -2,9 +2,9 @@
 	"name": "cosellhive/cosell-hive",
 	"description": "CoSellHive — shared affiliate marketplace connector for WooCommerce.",
 	"type": "wordpress-plugin",
-	"license": "GPL-2.0-or-later",
+	"license": "GPL-3.0-or-later",
 	"require": {
-		"php": ">=7.4"
+		"php": ">=8.1"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.7",

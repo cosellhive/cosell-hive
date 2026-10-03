@@ -21,7 +21,7 @@ Design patterns: Singleton (bootstrap), Factory + Strategy (hub client, commissi
 
 ## Requirements
 
-- WordPress 6.2+, PHP 7.4+, WooCommerce (store-side features only; affiliates work without it)
+- WordPress 6.3+, PHP 8.1+, WooCommerce (store-side features only; affiliates work without it)
 - Composer 2, Node 18+
 
 ## Local development
@@ -57,4 +57,4 @@ npx tsc --noEmit     # typecheck
 
 ## License
 
-GPL-2.0-or-later (see plugin headers and `readme.txt`).
+GPL-3.0-or-later (see plugin headers and `readme.txt`).
