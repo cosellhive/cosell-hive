@@ -84,8 +84,8 @@ class ClickRepository {
 				'token'        => $token,
 				'product_id'   => absint( $product_id ),
 				'affiliate_id' => absint( $affiliate_id ),
-				'ip_hash'      => '' !== $ip ? hash( 'sha256', $ip ) : '',
-				'ua_hash'      => '' !== $ua ? hash( 'sha256', $ua ) : '',
+				'ip_hash'      => '' !== $ip ? hash_hmac( 'sha256', $ip, wp_salt( 'auth' ) ) : '',
+				'ua_hash'      => '' !== $ua ? hash_hmac( 'sha256', $ua, wp_salt( 'auth' ) ) : '',
 				'created_at'   => current_time( 'mysql' ),
 			),
 			array( '%s', '%d', '%d', '%s', '%s', '%s' )

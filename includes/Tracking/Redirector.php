@@ -126,7 +126,8 @@ class Redirector {
 		$token = isset( $response['token'] ) ? sanitize_text_field( $response['token'] ) : '';
 
 		if ( '' === $token ) {
-			return;
+			wp_safe_redirect( get_permalink( $product_id ), 302 );
+			exit;
 		}
 
 		$clicks = new ClickRepository();

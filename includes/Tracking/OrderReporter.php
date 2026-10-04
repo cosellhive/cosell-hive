@@ -79,11 +79,16 @@ class OrderReporter {
 			return;
 		}
 
+		$days  = absint( cosell_hive_get_setting( 'attribution_days', 30 ) );
+		$click = ( new ClickRepository() )->find_valid( $token, $days );
+
+		if ( ! $click ) {
+			return;
+		}
+
 		if ( function_exists( 'WC' ) && WC() && method_exists( WC(), 'session' ) && WC()->session ) {
 			WC()->session->set( 'cosell_hive_token', $token );
 		}
-
-		$days = absint( cosell_hive_get_setting( 'attribution_days', 30 ) );
 
 		setcookie(
 			self::COOKIE_NAME,

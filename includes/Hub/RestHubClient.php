@@ -64,6 +64,7 @@ class RestHubClient implements HubClientInterface {
 			$this->base() . '/v1' . $path,
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'X-Site-Id'    => $creds['site_id'],
@@ -162,6 +163,7 @@ class RestHubClient implements HubClientInterface {
 			$this->base() . '/v1/me/entitlements',
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'X-Site-Id'   => $creds['site_id'],
 					'X-Signature' => $headers['signature'],
@@ -228,6 +230,7 @@ class RestHubClient implements HubClientInterface {
 			),
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'X-Site-Id'   => $creds['site_id'],
 					'X-Signature' => $headers['signature'],

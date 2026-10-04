@@ -189,6 +189,7 @@ class OnboardingController {
 			$base . '/v1/sites/register',
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'Content-Type'  => 'application/json',
 					'Authorization' => 'Bearer ' . $token,

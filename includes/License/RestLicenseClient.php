@@ -68,6 +68,7 @@ class RestLicenseClient implements LicenseClientInterface {
 			$this->base() . '/v1/license/activate',
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'X-Site-Id'    => $creds['site_id'],
@@ -118,6 +119,7 @@ class RestLicenseClient implements LicenseClientInterface {
 			$this->base() . '/v1/license/validate',
 			array(
 				'timeout' => 15,
+				'sslverify' => true,
 				'headers' => array(
 					'Content-Type' => 'application/json',
 					'X-Site-Id'    => $creds['site_id'],

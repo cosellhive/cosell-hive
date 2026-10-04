@@ -79,6 +79,12 @@ class ApprovalQueueController {
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'approve' ),
 				'permission_callback' => array( $this, 'can_moderate' ),
+				'args'                => array(
+					'reason' => array(
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_textarea_field',
+					),
+				),
 			)
 		);
 
@@ -89,6 +95,12 @@ class ApprovalQueueController {
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'reject' ),
 				'permission_callback' => array( $this, 'can_moderate' ),
+				'args'                => array(
+					'reason' => array(
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_textarea_field',
+					),
+				),
 			)
 		);
 	}
