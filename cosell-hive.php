@@ -22,25 +22,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use CoSellHive\Core\Plugin;
-use CoSellHive\Core\Installer;
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
-define( 'COSELL_HIVE_VERSION', '1.0.0' );
-define( 'COSELL_HIVE_FILE', __FILE__ );
-define( 'COSELL_HIVE_PATH', dirname( COSELL_HIVE_FILE ) );
-define( 'COSELL_HIVE_INCLUDES', COSELL_HIVE_PATH . '/includes' );
-define( 'COSELL_HIVE_MODULES', COSELL_HIVE_PATH . '/modules' );
-define( 'COSELL_HIVE_URL', plugins_url( '', COSELL_HIVE_FILE ) );
-define( 'COSELL_HIVE_ASSETS', COSELL_HIVE_URL . '/assets' );
-define( 'COSELL_HIVE_MIN_PHP', '8.1' );
-define( 'COSELL_HIVE_MIN_WP', '6.3' );
-define( 'COSELL_HIVE_DB_VERSION', '1.0.0' );
+if ( ! class_exists( Plugin::class ) ) {
+	add_action(
+		'admin_notices',
+		static function () {
+			echo '<div class="notice notice-error"><p>'
+				. esc_html__( 'CoSellHive could not load its files. Please reinstall the plugin.', 'cosell-hive' )
+				. '</p></div>';
+		}
+	);
+	return;
+}
+
+// Backward-compatibility aliases. The Plugin class constants are the source
+// of truth; these globals stay so existing code keeps working. Do not add
+// new COSELL_HIVE_* globals.
+if ( ! defined( 'COSELL_HIVE_VERSION' ) ) {
+	define( 'COSELL_HIVE_VERSION', Plugin::VERSION );
+}
+if ( ! defined( 'COSELL_HIVE_MIN_PHP' ) ) {
+	define( 'COSELL_HIVE_MIN_PHP', Plugin::MIN_PHP );
+}
+if ( ! defined( 'COSELL_HIVE_MIN_WP' ) ) {
+	define( 'COSELL_HIVE_MIN_WP', Plugin::MIN_WP );
+}
+if ( ! defined( 'COSELL_HIVE_DB_VERSION' ) ) {
+	define( 'COSELL_HIVE_DB_VERSION', Plugin::DB_VERSION );
+}
+if ( ! defined( 'COSELL_HIVE_FILE' ) ) {
+	define( 'COSELL_HIVE_FILE', __FILE__ );
+}
+if ( ! defined( 'COSELL_HIVE_PATH' ) ) {
+	define( 'COSELL_HIVE_PATH', dirname( __FILE__ ) );
+}
+if ( ! defined( 'COSELL_HIVE_INCLUDES' ) ) {
+	define( 'COSELL_HIVE_INCLUDES', COSELL_HIVE_PATH . '/includes' );
+}
+if ( ! defined( 'COSELL_HIVE_MODULES' ) ) {
+	define( 'COSELL_HIVE_MODULES', COSELL_HIVE_PATH . '/modules' );
+}
+if ( ! defined( 'COSELL_HIVE_URL' ) ) {
+	define( 'COSELL_HIVE_URL', plugins_url( '', __FILE__ ) );
+}
+if ( ! defined( 'COSELL_HIVE_ASSETS' ) ) {
+	define( 'COSELL_HIVE_ASSETS', COSELL_HIVE_URL . '/assets' );
+}
 
 /**
- * Initialize the plugin.
+ * Get the plugin instance.
  *
  * @return Plugin|null
  */
@@ -52,93 +86,4 @@ function cosell_hive() {
 	return Plugin::init();
 }
 
-/**
- * Render a bootstrap failure notice.
- *
- * @return void
- */
-function cosell_hive_bootstrap_notice() {
-	if ( ! current_user_can( 'activate_plugins' ) ) {
-		return;
-	}
-
-	echo '<div class="notice notice-error"><p>' . esc_html__( 'CoSellHive could not load its files. Please reinstall the plugin.', 'cosell-hive' ) . '</p></div>';
-}
-
-/**
- * Guard the runtime environment before booting.
- *
- * @return bool
- */
-function cosell_hive_environment_supported() {
-	global $wp_version;
-
-	if ( version_compare( PHP_VERSION, COSELL_HIVE_MIN_PHP, '<' ) ) {
-		return false;
-	}
-
-	if ( isset( $wp_version ) && version_compare( $wp_version, COSELL_HIVE_MIN_WP, '<' ) ) {
-		return false;
-	}
-
-	return true;
-}
-
-/**
- * Boot the plugin on plugins_loaded.
- *
- * @return void
- */
-function cosell_hive_bootstrap() {
-	if ( ! cosell_hive_environment_supported() ) {
-		add_action( 'admin_notices', 'cosell_hive_bootstrap_notice' );
-		return;
-	}
-
-	if ( ! class_exists( Plugin::class ) ) {
-		add_action( 'admin_notices', 'cosell_hive_bootstrap_notice' );
-		return;
-	}
-
-	cosell_hive();
-}
-
-/**
- * Render the network activation notice.
- *
- * @return void
- */
-function cosell_hive_network_notice() {
-	echo '<div class="notice notice-warning"><p>' . esc_html__( 'CoSellHive must be activated individually on each site. Network-wide activation is not supported.', 'cosell-hive' ) . '</p></div>';
-}
-
-/**
- * Activation callback.
- *
- * @param bool $network_wide Whether the plugin is being network-activated.
- * @return void
- */
-function cosell_hive_activate( $network_wide = false ) {
-	if ( $network_wide ) {
-		update_site_option( 'cosell_hive_network_activation_notice', 1 );
-		return;
-	}
-
-	$installer = new Installer();
-	$installer->activate();
-}
-
-/**
- * Deactivation callback.
- *
- * @return void
- */
-function cosell_hive_deactivate() {
-	$installer = new Installer();
-	$installer->deactivate();
-}
-
-add_action( 'plugins_loaded', 'cosell_hive_bootstrap', 1 );
-
-register_activation_hook( __FILE__, 'cosell_hive_activate' );
-register_deactivation_hook( __FILE__, 'cosell_hive_deactivate' );
+Plugin::register( __FILE__ );

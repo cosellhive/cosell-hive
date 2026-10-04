@@ -26,14 +26,63 @@ final class Plugin {
 	 *
 	 * @var string
 	 */
-	public $version = COSELL_HIVE_VERSION;
+	const VERSION = '1.0.0';
 
 	/**
 	 * Minimum PHP version.
 	 *
 	 * @var string
 	 */
-	private $min_php = COSELL_HIVE_MIN_PHP;
+	const MIN_PHP = '8.1';
+
+	/**
+	 * Minimum WordPress version.
+	 *
+	 * @var string
+	 */
+	const MIN_WP = '6.3';
+
+	/**
+	 * Database schema version.
+	 *
+	 * @var string
+	 */
+	const DB_VERSION = '1.0.0';
+
+	/**
+	 * Text domain.
+	 *
+	 * @var string
+	 */
+	const TEXT_DOMAIN = 'cosell-hive';
+
+	/**
+	 * Absolute path of the main plugin file.
+	 *
+	 * @var string
+	 */
+	private static $file = '';
+
+	/**
+	 * Plugin directory path, without trailing slash.
+	 *
+	 * @var string
+	 */
+	private static $path = '';
+
+	/**
+	 * Plugin directory URL, without trailing slash.
+	 *
+	 * @var string
+	 */
+	private static $url = '';
+
+	/**
+	 * Plugin version.
+	 *
+	 * @var string
+	 */
+	public $version = self::VERSION;
 
 	/**
 	 * Service container.
@@ -50,9 +99,72 @@ final class Plugin {
 	private static $instance = null;
 
 	/**
+	 * Register the plugin's lifecycle hooks.
+	 *
+	 * Called once from the bootstrap file. Stores the file, path and URL the
+	 * whole plugin derives from, and wires booting plus the activation and
+	 * deactivation callbacks. Everything the plugin hooks into WordPress is
+	 * registered here, not in the bootstrap file.
+	 *
+	 * @param string $plugin_file Absolute path of the main plugin file.
+	 * @return void
+	 */
+	public static function register( $plugin_file ) {
+		self::$file = $plugin_file;
+		self::$path = dirname( $plugin_file );
+		self::$url  = plugins_url( '', $plugin_file );
+
+		add_action( 'plugins_loaded', array( __CLASS__, 'boot' ), 1 );
+		register_activation_hook( $plugin_file, array( __CLASS__, 'activate' ) );
+		register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ) );
+	}
+
+	/**
+	 * Boot on plugins_loaded: check the environment, then initialize.
+	 *
+	 * Failures render an admin notice and skip setup.
+	 *
+	 * @return Plugin|null Instance when supported, null otherwise.
+	 */
+	public static function boot() {
+		if ( ! self::is_supported_environment() ) {
+			add_action( 'admin_notices', array( \CoSellHive\Notice::class, 'files_missing' ) );
+			return null;
+		}
+
+		return self::init();
+	}
+
+	/**
+	 * Activation callback registered in register().
+	 *
+	 * @param bool $network_wide Whether the plugin is being network-activated.
+	 * @return void
+	 */
+	public static function activate( $network_wide = false ) {
+		if ( $network_wide ) {
+			update_site_option( 'cosell_hive_network_activation_notice', 1 );
+			return;
+		}
+
+		$installer = new Installer();
+		$installer->activate();
+	}
+
+	/**
+	 * Deactivation callback registered in register().
+	 *
+	 * @return void
+	 */
+	public static function deactivate() {
+		$installer = new Installer();
+		$installer->deactivate();
+	}
+
+	/**
 	 * Get singleton instance.
 	 *
-	 * @return Plugin
+	 * @return Plugin|null Instance once booted, null otherwise.
 	 */
 	public static function init() {
 		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof Plugin ) ) {
@@ -64,25 +176,78 @@ final class Plugin {
 	}
 
 	/**
+	 * Absolute path of the main plugin file.
+	 *
+	 * @return string
+	 */
+	public static function file() {
+		return self::$file;
+	}
+
+	/**
+	 * Plugin directory path, without trailing slash.
+	 *
+	 * @return string
+	 */
+	public static function path() {
+		return self::$path;
+	}
+
+	/**
+	 * Plugin directory URL, without trailing slash.
+	 *
+	 * @return string
+	 */
+	public static function url() {
+		return self::$url;
+	}
+
+	/**
+	 * includes/ directory path.
+	 *
+	 * @return string
+	 */
+	public static function includes_dir() {
+		return self::$path . '/includes';
+	}
+
+	/**
+	 * modules/ directory path.
+	 *
+	 * @return string
+	 */
+	public static function modules_dir() {
+		return self::$path . '/modules';
+	}
+
+	/**
+	 * assets/ directory URL.
+	 *
+	 * @return string
+	 */
+	public static function assets_url() {
+		return self::$url . '/assets';
+	}
+
+	/**
 	 * Wire up the plugin.
 	 *
 	 * @return void
 	 */
 	private function setup() {
-		if ( function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( plugin_basename( COSELL_HIVE_FILE ) ) ) {
-			add_action( 'network_admin_notices', 'cosell_hive_network_notice' );
+		if ( function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( plugin_basename( self::$file ) ) ) {
+			add_action( 'network_admin_notices', array( \CoSellHive\Notice::class, 'network_activation' ) );
 			return;
 		}
 
 		if ( ! get_option( 'cosell_hive_db_version', false ) ) {
 			if ( is_admin() ) {
-				add_action( 'admin_notices', array( $this, 'missing_install_notice' ) );
+				add_action( 'admin_notices', array( \CoSellHive\Notice::class, 'missing_install' ) );
 			}
 
 			return;
 		}
 
-		$this->includes();
 		$this->instantiate();
 		$this->load_modules();
 		$this->init_actions();
@@ -123,16 +288,26 @@ final class Plugin {
 	 * @return bool
 	 */
 	public function is_supported_php() {
-		return version_compare( PHP_VERSION, $this->min_php, '>=' );
+		return version_compare( PHP_VERSION, self::MIN_PHP, '>=' );
 	}
 
 	/**
-	 * Include required files.
+	 * Whether the running environment meets both requirements.
 	 *
-	 * @return void
+	 * @return bool
 	 */
-	private function includes() {
-		require_once COSELL_HIVE_INCLUDES . '/functions-helpers.php';
+	public static function is_supported_environment() {
+		global $wp_version;
+
+		if ( version_compare( PHP_VERSION, self::MIN_PHP, '<' ) ) {
+			return false;
+		}
+
+		if ( isset( $wp_version ) && version_compare( $wp_version, self::MIN_WP, '<' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -181,23 +356,7 @@ final class Plugin {
 	 * @return void
 	 */
 	private function init_actions() {
-		add_filter( 'plugin_action_links_' . plugin_basename( COSELL_HIVE_FILE ), array( $this, 'plugin_action_links' ) );
-	}
-
-	/**
-	 * Show a notice when the plugin is active but not installed per site.
-	 *
-	 * @return void
-	 */
-	public function missing_install_notice() {
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-
-		printf(
-			'<div class="notice notice-warning"><p>%s</p></div>',
-			esc_html__( 'CoSellHive is active on this site but was not installed here. Please deactivate it and activate it individually on each site.', 'cosell-hive' )
-		);
+		add_filter( 'plugin_action_links_' . plugin_basename( self::$file ), array( $this, 'plugin_action_links' ) );
 	}
 
 	/**

@@ -7,6 +7,7 @@
 
 namespace CoSellHive\Shortcodes;
 
+use CoSellHive\Core\Plugin;
 use CoSellHive\Marketplace\ListingPresenter;
 use CoSellHive\Repository\ListingRepository;
 use CoSellHive\Tracking\Redirector;
@@ -54,14 +55,14 @@ class ProductCard {
 			return;
 		}
 
-		$asset_file = COSELL_HIVE_PATH . '/build/cosell-hive-product-card.asset.php';
+		$asset_file = Plugin::path() . '/build/cosell-hive-product-card.asset.php';
 
 		if ( file_exists( $asset_file ) ) {
 			$asset = require $asset_file;
 
 			wp_register_script(
 				'cosell-hive-product-card',
-				COSELL_HIVE_URL . '/build/cosell-hive-product-card.js',
+				Plugin::url() . '/build/cosell-hive-product-card.js',
 				$asset['dependencies'],
 				$asset['version'],
 				true
@@ -69,7 +70,7 @@ class ProductCard {
 		}
 
 		register_block_type(
-			COSELL_HIVE_PATH . '/blocks/product-card',
+			Plugin::path() . '/blocks/product-card',
 			array(
 				'editor_script'   => 'cosell-hive-product-card',
 				'render_callback' => array( $this, 'render_block' ),
@@ -96,9 +97,9 @@ class ProductCard {
 		if ( has_shortcode( $post->post_content, 'cosell_product' ) || has_block( 'cosell-hive/product-card', $post ) ) {
 			wp_enqueue_style(
 				'cosell-hive-frontend',
-				COSELL_HIVE_URL . '/assets/css/frontend.css',
+				Plugin::url() . '/assets/css/frontend.css',
 				array(),
-				COSELL_HIVE_VERSION
+				Plugin::VERSION
 			);
 		}
 	}

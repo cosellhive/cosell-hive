@@ -91,10 +91,10 @@ class Installer {
 	 * @return void
 	 */
 	public function maybe_upgrade() {
-		if ( COSELL_HIVE_DB_VERSION !== get_option( 'cosell_hive_db_version' ) ) {
+		if ( Plugin::DB_VERSION !== get_option( 'cosell_hive_db_version' ) ) {
 			$this->create_tables();
 			$this->migrate_legacy_prefixes();
-			update_option( 'cosell_hive_db_version', COSELL_HIVE_DB_VERSION );
+			update_option( 'cosell_hive_db_version', Plugin::DB_VERSION );
 		}
 	}
 
@@ -153,8 +153,8 @@ class Installer {
 	 * @return void
 	 */
 	private function add_options() {
-		add_option( 'cosell_hive_version', COSELL_HIVE_VERSION );
-		add_option( 'cosell_hive_db_version', COSELL_HIVE_DB_VERSION );
+		add_option( 'cosell_hive_version', Plugin::VERSION );
+		add_option( 'cosell_hive_db_version', Plugin::DB_VERSION );
 		add_option( 'cosell_hive_settings', array() );
 	}
 }

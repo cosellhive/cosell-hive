@@ -44,15 +44,15 @@ class Assets {
 		}
 
 		$handle    = $map[ $hook_suffix ];
-		$asset_file = COSELL_HIVE_PATH . '/build/' . $handle . '.asset.php';
+		$asset_file = Plugin::path() . '/build/' . $handle . '.asset.php';
 		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
 			'dependencies' => array( 'wp-element', 'wp-api-fetch' ),
-			'version'      => COSELL_HIVE_VERSION,
+			'version'      => Plugin::VERSION,
 		);
 
 		wp_enqueue_script(
 			$handle,
-			COSELL_HIVE_URL . '/build/' . $handle . '.js',
+			Plugin::url() . '/build/' . $handle . '.js',
 			$asset['dependencies'],
 			$asset['version'],
 			true
@@ -69,12 +69,12 @@ class Assets {
 			)
 		);
 
-		$css_file = COSELL_HIVE_PATH . '/assets/css/admin.css';
+		$css_file = Plugin::path() . '/assets/css/admin.css';
 
 		if ( file_exists( $css_file ) ) {
 			wp_enqueue_style(
 				$handle . '-styles',
-				COSELL_HIVE_URL . '/assets/css/admin.css',
+				Plugin::url() . '/assets/css/admin.css',
 				array(),
 				filemtime( $css_file )
 			);
