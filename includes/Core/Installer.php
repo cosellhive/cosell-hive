@@ -113,18 +113,14 @@ class Installer {
 			'ch_affiliate' => 'cs_hive_affiliate',
 		);
 
-		foreach ( get_users( array( 'fields' => array( 'ID' ) ) ) as $user_id ) {
-			$user = get_userdata( $user_id );
-
-			if ( ! $user instanceof \WP_User ) {
-				continue;
-			}
-
-			foreach ( $roles as $old => $new ) {
-				if ( in_array( $old, (array) $user->roles, true ) ) {
-					$user->add_role( $new );
-					$user->remove_role( $old );
+		foreach ( $roles as $old => $new ) {
+			foreach ( get_users( array( 'role' => $old ) ) as $user ) {
+				if ( ! $user instanceof \WP_User ) {
+					continue;
 				}
+
+				$user->add_role( $new );
+				$user->remove_role( $old );
 			}
 		}
 

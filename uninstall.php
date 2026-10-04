@@ -16,22 +16,22 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-$schema_file = __DIR__ . '/includes/Core/Schema.php';
+$cosell_hive_schema_file = __DIR__ . '/includes/Core/Schema.php';
 
-if ( file_exists( $schema_file ) ) {
-	require_once $schema_file;
+if ( file_exists( $cosell_hive_schema_file ) ) {
+	require_once $cosell_hive_schema_file;
 }
 
-$suffixes = array( 'cosell_listings', 'cosell_clicks', 'cosell_commissions', 'cosell_payouts' );
+$cosell_hive_suffixes = array( 'cosell_listings', 'cosell_clicks', 'cosell_commissions', 'cosell_payouts' );
 
 if ( class_exists( '\CoSellHive\Core\Schema' ) ) {
-	$suffixes = \CoSellHive\Core\Schema::TABLE_SUFFIXES;
+	$cosell_hive_suffixes = \CoSellHive\Core\Schema::TABLE_SUFFIXES;
 }
 
-$cron_hooks = array( 'cosell_hive_daily_maintenance', 'cosell_hive_daily_heartbeat' );
+$cosell_hive_cron_hooks = array( 'cosell_hive_daily_maintenance', 'cosell_hive_daily_heartbeat' );
 
 if ( class_exists( '\CoSellHive\Core\Schema' ) ) {
-	$cron_hooks = \CoSellHive\Core\Schema::CRON_HOOKS;
+	$cosell_hive_cron_hooks = \CoSellHive\Core\Schema::CRON_HOOKS;
 }
 
 /**
@@ -110,11 +110,11 @@ function cosell_hive_uninstall_site( $suffixes, $cron_hooks ) {
 }
 
 if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-	$sites = get_sites( array( 'fields' => 'ids' ) );
+	$cosell_hive_sites = get_sites( array( 'fields' => 'ids' ) );
 
-	foreach ( $sites as $blog_id ) {
+	foreach ( $cosell_hive_sites as $blog_id ) {
 		switch_to_blog( $blog_id );
-		cosell_hive_uninstall_site( $suffixes, $cron_hooks );
+		cosell_hive_uninstall_site( $cosell_hive_suffixes, $cosell_hive_cron_hooks );
 		restore_current_blog();
 	}
 
@@ -133,5 +133,5 @@ if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 		)
 	);
 } else {
-	cosell_hive_uninstall_site( $suffixes, $cron_hooks );
+	cosell_hive_uninstall_site( $cosell_hive_suffixes, $cosell_hive_cron_hooks );
 }
