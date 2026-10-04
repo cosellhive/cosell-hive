@@ -116,6 +116,17 @@ class Redirector {
 			return;
 		}
 
+		/**
+		 * Filter whether affiliate tracking is enabled. Consent tools
+		 * can return false until the visitor consents.
+		 *
+		 * @param bool $enabled Whether tracking is enabled.
+		 */
+		if ( ! apply_filters( 'cosell_hive_tracking_enabled', true ) ) {
+			wp_safe_redirect( get_permalink( $product_id ), 302 );
+			exit;
+		}
+
 		$response = $this->plugin->hub->track_click(
 			array(
 				'listing_id'   => $product_id,

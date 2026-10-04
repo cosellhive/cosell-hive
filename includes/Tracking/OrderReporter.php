@@ -69,6 +69,16 @@ class OrderReporter {
 			return;
 		}
 
+		/**
+		 * Filter whether affiliate tracking is enabled. Consent tools
+		 * can return false until the visitor consents.
+		 *
+		 * @param bool $enabled Whether tracking is enabled.
+		 */
+		if ( ! apply_filters( 'cosell_hive_tracking_enabled', true ) ) {
+			return;
+		}
+
 		if ( ! isset( $_GET['cs_hive_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
