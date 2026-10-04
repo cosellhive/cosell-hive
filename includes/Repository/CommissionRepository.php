@@ -32,7 +32,7 @@ class CommissionRepository {
 	public function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'cosell_commissions';
+		return $wpdb->prefix . \CoSellHive\Core\Schema::TABLE_COMMISSIONS;
 	}
 
 	/**

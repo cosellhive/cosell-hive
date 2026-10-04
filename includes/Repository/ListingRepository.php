@@ -29,7 +29,7 @@ class ListingRepository {
 	public function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'cosell_listings';
+		return $wpdb->prefix . \CoSellHive\Core\Schema::TABLE_LISTINGS;
 	}
 
 	/**

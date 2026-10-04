@@ -104,11 +104,26 @@ function cosell_hive_bootstrap() {
 }
 
 /**
- * Activation callback.
+ * Render the network activation notice.
  *
  * @return void
  */
-function cosell_hive_activate() {
+function cosell_hive_network_notice() {
+	echo '<div class="notice notice-warning"><p>' . esc_html__( 'CoSellHive must be activated individually on each site. Network-wide activation is not supported.', 'cosell-hive' ) . '</p></div>';
+}
+
+/**
+ * Activation callback.
+ *
+ * @param bool $network_wide Whether the plugin is being network-activated.
+ * @return void
+ */
+function cosell_hive_activate( $network_wide = false ) {
+	if ( $network_wide ) {
+		update_site_option( 'cosell_hive_network_activation_notice', 1 );
+		return;
+	}
+
 	$installer = new Installer();
 	$installer->activate();
 }

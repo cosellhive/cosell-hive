@@ -26,7 +26,7 @@ class ClickRepository {
 	public function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'cosell_clicks';
+		return $wpdb->prefix . \CoSellHive\Core\Schema::TABLE_CLICKS;
 	}
 
 	/**

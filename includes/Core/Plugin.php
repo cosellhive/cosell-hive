@@ -8,6 +8,7 @@
 namespace CoSellHive\Core;
 
 use CoSellHive\Admin\Menu;
+use CoSellHive\Admin\Settings;
 use CoSellHive\Hub\HubClientFactory;
 use CoSellHive\License\LicenseClientFactory;
 
@@ -68,6 +69,19 @@ final class Plugin {
 	 * @return void
 	 */
 	private function setup() {
+		if ( function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( plugin_basename( COSELL_HIVE_FILE ) ) ) {
+			add_action( 'network_admin_notices', 'cosell_hive_network_notice' );
+			return;
+		}
+
+		if ( ! get_option( 'cosell_hive_db_version', false ) ) {
+			if ( is_admin() ) {
+				add_action( 'admin_notices', array( $this, 'missing_install_notice' ) );
+			}
+
+			return;
+		}
+
 		$this->includes();
 		$this->instantiate();
 		$this->load_modules();
@@ -145,6 +159,7 @@ final class Plugin {
 		if ( is_admin() ) {
 			new Menu();
 			new Assets();
+			new Settings();
 		}
 
 		new I18n();
@@ -179,6 +194,22 @@ final class Plugin {
 	 */
 	public function localization_setup() {
 		load_plugin_textdomain( 'cosell-hive', false, dirname( plugin_basename( COSELL_HIVE_FILE ) ) . '/languages/' );
+	}
+
+	/**
+	 * Show a notice when the plugin is active but not installed per site.
+	 *
+	 * @return void
+	 */
+	public function missing_install_notice() {
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-warning"><p>%s</p></div>',
+			esc_html__( 'CoSellHive is active on this site but was not installed here. Please deactivate it and activate it individually on each site.', 'cosell-hive' )
+		);
 	}
 
 	/**

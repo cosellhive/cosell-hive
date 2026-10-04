@@ -30,7 +30,7 @@ class PayoutRepository {
 	public function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'cosell_payouts';
+		return $wpdb->prefix . \CoSellHive\Core\Schema::TABLE_PAYOUTS;
 	}
 
 	/**
