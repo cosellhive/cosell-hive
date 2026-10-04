@@ -161,8 +161,6 @@ final class Plugin {
 			new Assets();
 			new Settings();
 		}
-
-		new I18n();
 	}
 
 	/**
@@ -183,17 +181,7 @@ final class Plugin {
 	 * @return void
 	 */
 	private function init_actions() {
-		add_action( 'init', array( $this, 'localization_setup' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( COSELL_HIVE_FILE ), array( $this, 'plugin_action_links' ) );
-	}
-
-	/**
-	 * Load textdomain.
-	 *
-	 * @return void
-	 */
-	public function localization_setup() {
-		load_plugin_textdomain( 'cosell-hive', false, dirname( plugin_basename( COSELL_HIVE_FILE ) ) . '/languages/' );
 	}
 
 	/**

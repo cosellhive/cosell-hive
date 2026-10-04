@@ -1,4 +1,5 @@
 import { createRoot, useCallback, useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties } from 'react';
 
@@ -25,9 +26,9 @@ type QueueResponse = {
 };
 
 const TABS = [
-	{ key: 'pending', label: 'Pending review' },
-	{ key: 'live', label: 'Approved' },
-	{ key: 'rejected', label: 'Rejected' },
+	{ key: 'pending', label: __( 'Pending review', 'cosell-hive' ) },
+	{ key: 'live', label: __( 'Approved', 'cosell-hive' ) },
+	{ key: 'rejected', label: __( 'Rejected', 'cosell-hive' ) },
 ];
 
 function timeAgo( iso: string ): string {
@@ -35,12 +36,20 @@ function timeAgo( iso: string ): string {
 	const diff = Date.now() - then;
 	const hours = Math.floor( diff / 3600000 );
 	if ( hours < 1 ) {
-		return 'just now';
+		return __( 'just now', 'cosell-hive' );
 	}
 	if ( hours < 24 ) {
-		return `${ hours }h ago`;
+		return sprintf(
+			/* translators: %s: number of hours */
+			__( '%sh ago', 'cosell-hive' ),
+			hours
+		);
 	}
-	return `${ Math.floor( hours / 24 ) }d ago`;
+	return sprintf(
+		/* translators: %s: number of days */
+		__( '%sd ago', 'cosell-hive' ),
+		Math.floor( hours / 24 )
+	);
 }
 
 function ApprovalQueue() {
@@ -54,7 +63,7 @@ function ApprovalQueue() {
 			path: `/cosell-hive/v1/listings?status=${ tab }`,
 		} )
 			.then( setData )
-			.catch( () => setError( 'Could not load the queue.' ) );
+			.catch( () => setError( __( 'Could not load the queue.', 'cosell-hive' ) ) );
 	}, [ tab ] );
 
 	useEffect( () => {
@@ -68,7 +77,7 @@ function ApprovalQueue() {
 			method: 'POST',
 		} )
 			.then( load )
-			.catch( () => setError( 'Decision failed. Try again.' ) )
+			.catch( () => setError( __( 'Decision failed. Try again.', 'cosell-hive' ) ) )
 			.finally( () => setBusy( null ) );
 	};
 
@@ -77,7 +86,7 @@ function ApprovalQueue() {
 	}
 
 	if ( ! data ) {
-		return <p>Loading CoSellHive…</p>;
+		return <p>{ __( 'Loading CoSellHive…', 'cosell-hive' ) }</p>;
 	}
 
 	const tabStyle = ( active: boolean ): CSSProperties => ( {
@@ -108,7 +117,11 @@ function ApprovalQueue() {
 						tabIndex={ 0 }
 					>
 						{ t.key === 'pending'
-							? `Pending review (${ data.counts.pending })`
+							? sprintf(
+									/* translators: %s: number of pending items */
+									__( 'Pending review (%s)', 'cosell-hive' ),
+									data.counts.pending
+								)
 							: t.label }
 					</span>
 				) ) }
@@ -117,7 +130,7 @@ function ApprovalQueue() {
 				style={ { display: 'flex', flexDirection: 'column', gap: '10px' } }
 			>
 				{ data.items.length === 0 && (
-					<p>Nothing here. New submissions will appear for review.</p>
+					<p>{ __( 'Nothing here. New submissions will appear for review.', 'cosell-hive' ) }</p>
 				) }
 				{ data.items.map( ( item ) => (
 					<div
@@ -181,8 +194,12 @@ function ApprovalQueue() {
 										margin: 0,
 									} }
 								>
-									{ item.store } · { item.commission.label } ·
-									Submitted { timeAgo( item.submitted ) }
+									{ item.store } · { item.commission.label } ·{ ' ' }
+									{ sprintf(
+										/* translators: %s: relative time */
+										__( 'Submitted %s', 'cosell-hive' ),
+										timeAgo( item.submitted )
+									) }
 								</p>
 							</div>
 							{ tab === 'pending' && (
@@ -194,7 +211,7 @@ function ApprovalQueue() {
 											decide( item.id, 'reject' )
 										}
 									>
-										Reject
+										{ __( 'Reject', 'cosell-hive' ) }
 									</button>
 									<button
 										className="button button-primary"
@@ -203,7 +220,7 @@ function ApprovalQueue() {
 											decide( item.id, 'approve' )
 										}
 									>
-										Approve
+										{ __( 'Approve', 'cosell-hive' ) }
 									</button>
 								</>
 							) }

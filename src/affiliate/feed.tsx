@@ -1,4 +1,5 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties } from 'react';
 
@@ -56,7 +57,7 @@ function MarketplaceFeed() {
 				setSource( res.source ?? '' );
 				setLoaded( true );
 			} )
-			.catch( () => setError( 'Could not load the marketplace.' ) );
+			.catch( () => setError( __( 'Could not load the marketplace.', 'cosell-hive' ) ) );
 	}, [ search, min, recommended, niche ] );
 
 	const saveNiche = ( value: string ) => {
@@ -86,7 +87,7 @@ function MarketplaceFeed() {
 			<div style={ { display: 'flex', gap: '8px', marginBottom: '12px' } }>
 				<input
 					type="search"
-					placeholder="Search products or describe intent"
+					placeholder={ __( 'Search products or describe intent', 'cosell-hive' ) }
 					value={ search }
 					onChange={ ( e ) => setSearch( e.target.value ) }
 					style={ { flex: 1 } }
@@ -95,12 +96,12 @@ function MarketplaceFeed() {
 				<select
 					value={ min }
 					onChange={ ( e ) => setMin( e.target.value ) }
-					aria-label="Minimum commission"
+					aria-label={ __( 'Minimum commission', 'cosell-hive' ) }
 				>
-					<option value="">Any commission</option>
-					<option value="10">10%+ / $10+</option>
-					<option value="15">15%+ / $15+</option>
-					<option value="20">20%+ / $20+</option>
+					<option value="">{ __( 'Any commission', 'cosell-hive' ) }</option>
+					<option value="10">{ __( '10%+ / $10+', 'cosell-hive' ) }</option>
+					<option value="15">{ __( '15%+ / $15+', 'cosell-hive' ) }</option>
+					<option value="20">{ __( '20%+ / $20+', 'cosell-hive' ) }</option>
 				</select>
 			</div>
 			<div
@@ -117,30 +118,30 @@ function MarketplaceFeed() {
 						checked={ recommended }
 						onChange={ ( e ) => setRecommended( e.target.checked ) }
 					/>{ ' ' }
-					Recommended for you
+					{ __( 'Recommended for you', 'cosell-hive' ) }
 				</label>
 				{ recommended && (
 					<input
 						type="text"
-						placeholder="Describe your audience niche"
+						placeholder={ __( 'Describe your audience niche', 'cosell-hive' ) }
 						value={ niche }
 						onChange={ ( e ) => saveNiche( e.target.value ) }
 						style={ { flex: 1 } }
 						className="regular-text"
-						aria-label="Audience niche"
+						aria-label={ __( 'Audience niche', 'cosell-hive' ) }
 					/>
 				) }
 				{ source === 'hub' && (
 					<span style={ { fontSize: '12px', color: '#185FA5' } }>
-						AI-ranked
+						{ __( 'AI-ranked', 'cosell-hive' ) }
 					</span>
 				) }
 			</div>
 			{ loaded && items.length === 0 && (
 				<p>
 					{ recommended && ! niche
-						? 'Describe your niche to get recommendations.'
-						: 'No live listings match. Approved products appear here for promotion.' }
+						? __( 'Describe your niche to get recommendations.', 'cosell-hive' )
+						: __( 'No live listings match. Approved products appear here for promotion.', 'cosell-hive' ) }
 				</p>
 			) }
 			<div style={ { display: 'flex', gap: '12px', flexWrap: 'wrap' } }>
@@ -194,7 +195,7 @@ function MarketplaceFeed() {
 							>
 								{ item.commission.label }
 							</span>
-							<button className="button" onClick={ () => addToLinks( item.id ) } aria-label={ `Promote ${ item.title }` }>
+							<button className="button" onClick={ () => addToLinks( item.id ) } aria-label={ sprintf( __( 'Promote %s', 'cosell-hive' ), item.title ) }>
 								+
 							</button>
 						</div>

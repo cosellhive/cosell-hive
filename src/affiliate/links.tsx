@@ -1,4 +1,5 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties } from 'react';
 
@@ -50,7 +51,7 @@ function MyLinks() {
 					setSelected( res.items[ 0 ].id );
 				}
 			} )
-			.catch( () => setError( 'Could not load listings.' ) );
+			.catch( () => setError( __( 'Could not load listings.', 'cosell-hive' ) ) );
 	}, [] );
 
 	useEffect( () => {
@@ -65,7 +66,7 @@ function MyLinks() {
 			data: { listing_id: selected },
 		} )
 			.then( setLink )
-			.catch( () => setError( 'Could not mint a tracked link.' ) );
+			.catch( () => setError( __( 'Could not mint a tracked link.', 'cosell-hive' ) ) );
 	}, [ selected ] );
 
 	const current = items.find( ( i ) => i.id === selected ) ?? null;
@@ -91,7 +92,7 @@ function MyLinks() {
 	}
 
 	if ( items.length === 0 ) {
-		return <p>No live listings to promote yet.</p>;
+		return <p>{ __( 'No live listings to promote yet.', 'cosell-hive' ) }</p>;
 	}
 
 	return (
@@ -101,7 +102,7 @@ function MyLinks() {
 				onChange={ ( e ) =>
 					setSelected( parseInt( e.target.value, 10 ) )
 				}
-				aria-label="Choose a product"
+				aria-label={ __( 'Choose a product', 'cosell-hive' ) }
 				style={ { marginBottom: '20px', minWidth: '280px' } }
 			>
 				{ items.map( ( item ) => (
@@ -144,15 +145,15 @@ function MyLinks() {
 			<p
 				style={ { fontSize: '13px', color: '#5f5e5a', margin: '0 0 6px' } }
 			>
-				Tracked link
+				{ __( 'Tracked link', 'cosell-hive' ) }
 			</p>
 			<div style={ { display: 'flex', gap: '8px', marginBottom: '16px' } }>
 				<input
 					className="regular-text"
 					style={ { flex: 1 } }
 					readOnly
-					value={ link ? link.url : 'Minting…' }
-					aria-label="Tracked link"
+					value={ link ? link.url : __( 'Minting…', 'cosell-hive' ) }
+					aria-label={ __( 'Tracked link', 'cosell-hive' ) }
 				/>
 				<button
 					className="button"
@@ -163,14 +164,14 @@ function MyLinks() {
 						}
 					} }
 				>
-					{ copied === 'link' ? 'Copied' : 'Copy' }
+					{ copied === 'link' ? __( 'Copied', 'cosell-hive' ) : __( 'Copy', 'cosell-hive' ) }
 				</button>
 			</div>
 
 			<p
 				style={ { fontSize: '13px', color: '#5f5e5a', margin: '0 0 6px' } }
 			>
-				Embed on my site
+				{ __( 'Embed on my site', 'cosell-hive' ) }
 			</p>
 			<div style={ { display: 'flex', gap: '8px', marginBottom: '8px' } }>
 				{ STYLES.map( ( s ) => (
@@ -187,10 +188,10 @@ function MyLinks() {
 						tabIndex={ 0 }
 					>
 						{ s === 'card'
-							? 'Product card'
+							? __( 'Product card', 'cosell-hive' )
 							: s === 'text'
-								? 'Text link'
-								: 'Banner' }
+								? __( 'Text link', 'cosell-hive' )
+								: __( 'Banner', 'cosell-hive' ) }
 					</span>
 				) ) }
 			</div>
@@ -216,13 +217,11 @@ function MyLinks() {
 						copyText( shortcode, () => setCopied( 'embed' ) )
 					}
 				>
-					{ copied === 'embed' ? 'Copied' : 'Copy' }
+					{ copied === 'embed' ? __( 'Copied', 'cosell-hive' ) : __( 'Copy', 'cosell-hive' ) }
 				</button>
 			</div>
 			<p style={ { fontSize: '12px', color: '#888780' } }>
-				Paste into any post or page — or use the CoSellHive Product
-				block with the same listing ID. Your affiliate ID is baked in,
-				so cached pages still attribute correctly.
+				{ __( 'Paste into any post or page — or use the CoSellHive Product block with the same listing ID. Your affiliate ID is baked in, so cached pages still attribute correctly.', 'cosell-hive' ) }
 			</p>
 
 			<div
@@ -238,10 +237,10 @@ function MyLinks() {
 			>
 				<div>
 					<p style={ { fontSize: '13px', margin: 0 } }>
-						Generate marketing copy
+						{ __( 'Generate marketing copy', 'cosell-hive' ) }
 					</p>
 					<p style={ { fontSize: '12px', color: '#888780', margin: 0 } }>
-						AI-written blurb and caption in your site&apos;s tone
+						{ __( 'AI-written blurb and caption in your site’s tone', 'cosell-hive' ) }
 					</p>
 				</div>
 				<button
@@ -257,10 +256,10 @@ function MyLinks() {
 							data: { listing_id: selected },
 						} )
 							.then( setCopy )
-							.catch( () => setError( 'Copy generation failed.' ) );
+							.catch( () => setError( __( 'Copy generation failed.', 'cosell-hive' ) ) );
 					} }
 				>
-					Generate
+					{ __( 'Generate', 'cosell-hive' ) }
 				</button>
 			</div>
 			{ copy && (
@@ -275,11 +274,11 @@ function MyLinks() {
 						} }
 					>
 						<p style={ { fontSize: '12px', color: '#5f5e5a', margin: '0 0 4px' } }>
-							Blurb
+							{ __( 'Blurb', 'cosell-hive' ) }
 						</p>
 						<p style={ { fontSize: '13px', margin: '0 0 8px' } }>{ copy.blurb }</p>
 						<button className="button" onClick={ () => copyText( copy.blurb, () => setCopied( 'blurb' ) ) }>
-							{ copied === 'blurb' ? 'Copied' : 'Copy' }
+							{ copied === 'blurb' ? __( 'Copied', 'cosell-hive' ) : __( 'Copy', 'cosell-hive' ) }
 						</button>
 					</div>
 					<div
@@ -291,11 +290,11 @@ function MyLinks() {
 						} }
 					>
 						<p style={ { fontSize: '12px', color: '#5f5e5a', margin: '0 0 4px' } }>
-							Social caption
+							{ __( 'Social caption', 'cosell-hive' ) }
 						</p>
 						<p style={ { fontSize: '13px', margin: '0 0 8px' } }>{ copy.caption }</p>
 						<button className="button" onClick={ () => copyText( copy.caption, () => setCopied( 'caption' ) ) }>
-							{ copied === 'caption' ? 'Copied' : 'Copy' }
+							{ copied === 'caption' ? __( 'Copied', 'cosell-hive' ) : __( 'Copy', 'cosell-hive' ) }
 						</button>
 					</div>
 				</div>

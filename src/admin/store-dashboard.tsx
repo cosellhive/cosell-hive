@@ -1,4 +1,5 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties } from 'react';
 
@@ -54,7 +55,7 @@ function StoreDashboard() {
 	useEffect( () => {
 		apiFetch< Dashboard >( { path: '/cosell-hive/v1/dashboard' } )
 			.then( setData )
-			.catch( () => setError( 'Could not load dashboard.' ) );
+			.catch( () => setError( __( 'Could not load dashboard.', 'cosell-hive' ) ) );
 	}, [] );
 
 	if ( error ) {
@@ -62,15 +63,15 @@ function StoreDashboard() {
 	}
 
 	if ( ! data ) {
-		return <p>Loading CoSellHive…</p>;
+		return <p>{ __( 'Loading CoSellHive…', 'cosell-hive' ) }</p>;
 	}
 
 	const { stats, listings } = data;
 	const tiles: Array< [ string, number ] > = [
-		[ 'Active listings', stats.active_listings ],
-		[ 'Active affiliates', stats.active_affiliates ],
-		[ 'GMV this month', stats.gmv_this_month ],
-		[ 'Commission paid', stats.commission_paid ],
+		[ __( 'Active listings', 'cosell-hive' ), stats.active_listings ],
+		[ __( 'Active affiliates', 'cosell-hive' ), stats.active_affiliates ],
+		[ __( 'GMV this month', 'cosell-hive' ), stats.gmv_this_month ],
+		[ __( 'Commission paid', 'cosell-hive' ), stats.commission_paid ],
 	];
 
 	return (
@@ -104,19 +105,18 @@ function StoreDashboard() {
 			<table className="widefat striped">
 				<thead>
 					<tr>
-						<th>Product</th>
-						<th>Commission</th>
-						<th>Affiliates</th>
-						<th>Sales (30d)</th>
-						<th>Status</th>
+						<th>{ __( 'Product', 'cosell-hive' ) }</th>
+						<th>{ __( 'Commission', 'cosell-hive' ) }</th>
+						<th>{ __( 'Affiliates', 'cosell-hive' ) }</th>
+						<th>{ __( 'Sales (30d)', 'cosell-hive' ) }</th>
+						<th>{ __( 'Status', 'cosell-hive' ) }</th>
 					</tr>
 				</thead>
 				<tbody>
 					{ listings.length === 0 && (
 						<tr>
 							<td colSpan={ 5 }>
-								No marketplace listings yet. Enable CoSellHive on a
-								product to publish it for review.
+								{ __( 'No marketplace listings yet. Enable CoSellHive on a product to publish it for review.', 'cosell-hive' ) }
 							</td>
 						</tr>
 					) }

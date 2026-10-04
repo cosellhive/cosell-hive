@@ -1,5 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 import type { FormEvent } from 'react';
 
 type Attributes = {
@@ -9,9 +10,9 @@ type Attributes = {
 };
 
 registerBlockType< Attributes >( 'cosell-hive/product-card', {
-	title: 'CoSellHive Product',
+	title: __( 'CoSellHive Product', 'cosell-hive' ),
 	category: 'widgets',
-	description: 'Embed a marketplace product with your tracked affiliate link.',
+	description: __( 'Embed a marketplace product with your tracked affiliate link.', 'cosell-hive' ),
 	attributes: {
 		listingId: { type: 'string', default: '' },
 		affiliateId: { type: 'number', default: 0 },
@@ -33,10 +34,10 @@ registerBlockType< Attributes >( 'cosell-hive/product-card', {
 		return (
 			<div { ...blockProps }>
 				<p>
-					<strong>CoSellHive Product</strong>
+					<strong>{ __( 'CoSellHive Product', 'cosell-hive' ) }</strong>
 				</p>
 				<label>
-					Listing ID (copy it from My Links)
+					{ __( 'Listing ID (copy it from My Links)', 'cosell-hive' ) }
 					<input
 						type="text"
 						value={ attributes.listingId }
@@ -45,7 +46,7 @@ registerBlockType< Attributes >( 'cosell-hive/product-card', {
 					/>
 				</label>
 				<label>
-					Affiliate user ID
+					{ __( 'Affiliate user ID', 'cosell-hive' ) }
 					<input
 						type="number"
 						min={ 0 }
@@ -54,14 +55,14 @@ registerBlockType< Attributes >( 'cosell-hive/product-card', {
 					/>
 				</label>
 				<label>
-					Style
+					{ __( 'Style', 'cosell-hive' ) }
 					<select
 						value={ attributes.style }
 						onChange={ ( e ) => onChange( 'style', e ) }
 					>
-						<option value="card">Product card</option>
-						<option value="text">Text link</option>
-						<option value="banner">Banner</option>
+						<option value="card">{ __( 'Product card', 'cosell-hive' ) }</option>
+						<option value="text">{ __( 'Text link', 'cosell-hive' ) }</option>
+						<option value="banner">{ __( 'Banner', 'cosell-hive' ) }</option>
 					</select>
 				</label>
 			</div>

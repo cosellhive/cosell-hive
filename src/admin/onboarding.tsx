@@ -1,4 +1,5 @@
 import { createRoot, useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties, FormEvent } from 'react';
 
@@ -29,7 +30,7 @@ function Onboarding() {
 					setRole( res.site_role );
 				}
 			} )
-			.catch( () => setError( 'Could not load onboarding status.' ) );
+			.catch( () => setError( __( 'Could not load onboarding status.', 'cosell-hive' ) ) );
 	}, [] );
 
 	const submit = ( e: FormEvent ) => {
@@ -44,7 +45,7 @@ function Onboarding() {
 				setStatus( res );
 				setDone( true );
 			} )
-			.catch( () => setError( 'Activation failed. Check the key.' ) );
+			.catch( () => setError( __( 'Activation failed. Check the key.', 'cosell-hive' ) ) );
 	};
 
 	const roleCard = ( value: string, label: string ): CSSProperties => ( {
@@ -64,10 +65,10 @@ function Onboarding() {
 	return (
 		<div style={ { maxWidth: '420px', margin: '0 auto', padding: '24px' } }>
 			<p style={ { fontSize: '16px', fontWeight: 600, margin: '0 0 4px' } }>
-				Connect to the marketplace
+				{ __( 'Connect to the marketplace', 'cosell-hive' ) }
 			</p>
 			<p style={ { fontSize: '12px', color: '#5f5e5a', marginBottom: '20px' } }>
-				Activate your license to start publishing or browsing products.
+				{ __( 'Activate your license to start publishing or browsing products.', 'cosell-hive' ) }
 			</p>
 			{ status?.connected && (
 				<p
@@ -79,14 +80,18 @@ function Onboarding() {
 						fontSize: '13px',
 					} }
 				>
-					Connected · { status.entitlements.tier } tier · up to{ ' ' }
-					{ status.entitlements.listed_product_limit } listings ·{ ' ' }
-					{ status.hub ? 'hub' : 'local mock' }
+					{ sprintf(
+						/* translators: 1: tier name, 2: listing limit, 3: hub or local mock */
+						__( 'Connected · %1$s tier · up to %2$s listings · %3$s', 'cosell-hive' ),
+						status.entitlements.tier,
+						status.entitlements.listed_product_limit,
+						status.hub ? 'hub' : 'local mock'
+					) }
 				</p>
 			) }
 			<form onSubmit={ submit }>
 				<p style={ { fontSize: '13px', color: '#5f5e5a' } }>
-					License key
+					{ __( 'License key', 'cosell-hive' ) }
 				</p>
 				<input
 					type="text"
@@ -94,11 +99,11 @@ function Onboarding() {
 					onChange={ ( e ) => setKey( e.target.value ) }
 					placeholder="XXXX-XXXX-XXXX-XXXX"
 					style={ { width: '100%', marginBottom: '16px' } }
-					aria-label="License key"
+					aria-label={ __( 'License key', 'cosell-hive' ) }
 					required
 				/>
 				<p style={ { fontSize: '13px', color: '#5f5e5a' } }>
-					This site will act as a
+					{ __( 'This site will act as a', 'cosell-hive' ) }
 				</p>
 				<div style={ { display: 'flex', gap: '8px', marginBottom: '20px' } }>
 					{ [ 'store', 'affiliate' ].map( ( r ) => (
@@ -123,7 +128,7 @@ function Onboarding() {
 										role === r ? '#185FA5' : '#5f5e5a',
 								} }
 							>
-								{ r === 'store' ? 'Store' : 'Affiliate' }
+								{ r === 'store' ? __( 'Store', 'cosell-hive' ) : __( 'Affiliate', 'cosell-hive' ) }
 							</p>
 						</div>
 					) ) }
@@ -133,19 +138,17 @@ function Onboarding() {
 					style={ { width: '100%', textAlign: 'center' } }
 					type="submit"
 				>
-					Activate and connect
+					{ __( 'Activate and connect', 'cosell-hive' ) }
 				</button>
 			</form>
 			{ error && <p style={ { color: '#A32D2D' } }>{ error }</p> }
 			{ done && (
 				<p style={ { color: '#3b6d11' } }>
-					Activated. Publish products from WooCommerce or browse the
-					marketplace.
+					{ __( 'Activated. Publish products from WooCommerce or browse the marketplace.', 'cosell-hive' ) }
 				</p>
 			) }
 			<p style={ { fontSize: '12px', textAlign: 'center' } }>
-				Don&apos;t have a key? Start a free trial from your CoSellHive
-				account.
+				{ __( 'Don’t have a key? Start a free trial from your CoSellHive account.', 'cosell-hive' ) }
 			</p>
 		</div>
 	);

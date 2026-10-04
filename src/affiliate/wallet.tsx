@@ -1,4 +1,5 @@
 import { createRoot, useCallback, useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import type { CSSProperties, FormEvent } from 'react';
 
@@ -42,7 +43,7 @@ function AffiliateWallet( { wallet }: { wallet: Wallet } ) {
 			path: '/cosell-hive/v1/payouts?scope=mine',
 		} )
 			.then( ( res ) => setItems( res.items ) )
-			.catch( () => setError( 'Could not load payout history.' ) );
+			.catch( () => setError( __( 'Could not load payout history.', 'cosell-hive' ) ) );
 	}, [] );
 
 	useEffect( () => {
@@ -63,18 +64,18 @@ function AffiliateWallet( { wallet }: { wallet: Wallet } ) {
 			},
 		} )
 			.then( () => {
-				setDone( 'Payout requested. An admin will review it.' );
+				setDone( __( 'Payout requested. An admin will review it.', 'cosell-hive' ) );
 				setAmount( '' );
 				setDetails( '' );
 				load();
 			} )
-			.catch( () => setError( 'Request failed. Check the amount and details.' ) );
+			.catch( () => setError( __( 'Request failed. Check the amount and details.', 'cosell-hive' ) ) );
 	};
 
 	const tiles: Array< [ string, number, boolean ] > = [
-		[ 'Pending', wallet.balances.pending, false ],
-		[ 'Payable', wallet.balances.payable, false ],
-		[ 'Available balance', wallet.balances.available, true ],
+		[ __( 'Pending', 'cosell-hive' ), wallet.balances.pending, false ],
+		[ __( 'Payable', 'cosell-hive' ), wallet.balances.payable, false ],
+		[ __( 'Available balance', 'cosell-hive' ), wallet.balances.available, true ],
 	];
 
 	return (
@@ -114,24 +115,28 @@ function AffiliateWallet( { wallet }: { wallet: Wallet } ) {
 			</div>
 
 			<form onSubmit={ submit } style={ { marginBottom: '18px' } }>
-				<p style={ { fontSize: '13px', color: '#5f5e5a' } }>
-					Request payout (minimum { money( wallet.minimum ) })
-				</p>
+			<p style={ { fontSize: '13px', color: '#5f5e5a' } }>
+				{ sprintf(
+					/* translators: %s: minimum payout amount */
+					__( 'Request payout (minimum %s)', 'cosell-hive' ),
+					money( wallet.minimum )
+				) }
+			</p>
 				<div style={ { display: 'flex', gap: '8px', flexWrap: 'wrap' } }>
 					<input
 						type="number"
 						step="0.01"
 						min="0"
-						placeholder="Amount"
-						value={ amount }
-						onChange={ ( e ) => setAmount( e.target.value ) }
-						aria-label="Amount"
+					placeholder={ __( 'Amount', 'cosell-hive' ) }
+					value={ amount }
+					onChange={ ( e ) => setAmount( e.target.value ) }
+					aria-label={ __( 'Amount', 'cosell-hive' ) }
 						required
 					/>
 					<select
 						value={ method }
 						onChange={ ( e ) => setMethod( e.target.value ) }
-						aria-label="Method"
+						aria-label={ __( 'Method', 'cosell-hive' ) }
 					>
 						{ wallet.methods.map( ( m ) => (
 							<option key={ m } value={ m }>
@@ -141,15 +146,15 @@ function AffiliateWallet( { wallet }: { wallet: Wallet } ) {
 					</select>
 					<input
 						type="text"
-						placeholder="Account details"
-						value={ details }
-						onChange={ ( e ) => setDetails( e.target.value ) }
-						aria-label="Account details"
+					placeholder={ __( 'Account details', 'cosell-hive' ) }
+					value={ details }
+					onChange={ ( e ) => setDetails( e.target.value ) }
+					aria-label={ __( 'Account details', 'cosell-hive' ) }
 						style={ { flex: 1, minWidth: '200px' } }
 						required
 					/>
 					<button className="button button-primary" type="submit">
-						Request payout
+						{ __( 'Request payout', 'cosell-hive' ) }
 					</button>
 				</div>
 				{ error && <p style={ { color: '#A32D2D' } }>{ error }</p> }
@@ -157,7 +162,7 @@ function AffiliateWallet( { wallet }: { wallet: Wallet } ) {
 			</form>
 
 			<p style={ { fontSize: '12px', color: '#5f5e5a' } }>
-				Payout history
+				{ __( 'Payout history', 'cosell-hive' ) }
 			</p>
 			<HistoryTable items={ items } />
 		</div>
@@ -169,16 +174,16 @@ function HistoryTable( { items }: { items: Payout[] } ) {
 		<table className="widefat striped">
 			<thead>
 				<tr>
-					<th>Date</th>
-					<th>Method</th>
-					<th>Amount</th>
-					<th>Status</th>
+					<th>{ __( 'Date', 'cosell-hive' ) }</th>
+					<th>{ __( 'Method', 'cosell-hive' ) }</th>
+					<th>{ __( 'Amount', 'cosell-hive' ) }</th>
+					<th>{ __( 'Status', 'cosell-hive' ) }</th>
 				</tr>
 			</thead>
 			<tbody>
 				{ items.length === 0 && (
 					<tr>
-						<td colSpan={ 4 }>No payouts yet.</td>
+						<td colSpan={ 4 }>{ __( 'No payouts yet.', 'cosell-hive' ) }</td>
 					</tr>
 				) }
 				{ items.map( ( item ) => (
@@ -218,7 +223,7 @@ function AdminQueue() {
 			path: '/cosell-hive/v1/payouts?status=requested',
 		} )
 			.then( ( res ) => setItems( res.items ) )
-			.catch( () => setError( 'Could not load payout requests.' ) );
+			.catch( () => setError( __( 'Could not load payout requests.', 'cosell-hive' ) ) );
 	}, [] );
 
 	useEffect( () => {
@@ -231,7 +236,7 @@ function AdminQueue() {
 			method: 'POST',
 		} )
 			.then( load )
-			.catch( () => setError( 'Action failed.' ) );
+			.catch( () => setError( __( 'Action failed.', 'cosell-hive' ) ) );
 	};
 
 	if ( error ) {
@@ -241,9 +246,9 @@ function AdminQueue() {
 	return (
 		<div>
 			<p style={ { fontSize: '13px', color: '#5f5e5a' } }>
-				Payout requests — transfer manually, then mark paid.
+				{ __( 'Payout requests — transfer manually, then mark paid.', 'cosell-hive' ) }
 			</p>
-			{ items.length === 0 && <p>No pending requests.</p> }
+			{ items.length === 0 && <p>{ __( 'No pending requests.', 'cosell-hive' ) }</p> }
 			{ items.map( ( item ) => (
 				<div
 					key={ item.id }
@@ -277,19 +282,19 @@ function AdminQueue() {
 						className="button"
 						onClick={ () => act( item.id, 'reject' ) }
 					>
-						Reject
+						{ __( 'Reject', 'cosell-hive' ) }
 					</button>
 					<button
 						className="button button-primary"
 						onClick={ () => act( item.id, 'approve' ) }
 					>
-						Approve
+						{ __( 'Approve', 'cosell-hive' ) }
 					</button>
 					<button
 						className="button"
 						onClick={ () => act( item.id, 'mark-paid' ) }
 					>
-						Mark paid
+						{ __( 'Mark paid', 'cosell-hive' ) }
 					</button>
 				</div>
 			) ) }
@@ -305,7 +310,7 @@ function WalletRoot() {
 	useEffect( () => {
 		apiFetch< Wallet >( { path: '/cosell-hive/v1/wallet' } )
 			.then( setWallet )
-			.catch( () => setError( 'Could not load wallet.' ) );
+			.catch( () => setError( __( 'Could not load wallet.', 'cosell-hive' ) ) );
 		apiFetch< { items: Payout[] } >( { path: '/cosell-hive/v1/payouts' } )
 			.then( ( res ) => {
 				const first: Payout | undefined = res.items[ 0 ];
@@ -319,7 +324,7 @@ function WalletRoot() {
 	}
 
 	if ( ! wallet ) {
-		return <p>Loading CoSellHive…</p>;
+		return <p>{ __( 'Loading CoSellHive…', 'cosell-hive' ) }</p>;
 	}
 
 	return (
