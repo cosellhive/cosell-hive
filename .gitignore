@@ -2,6 +2,7 @@
 /vendor/
 /node_modules/
 /build/*.map
+/dist/
 .DS_Store
 
 # Wordpress - ignore core, configuration, examples, uploads and logs.
