@@ -22,7 +22,7 @@ Design patterns: Singleton (bootstrap), Factory + Strategy (hub client, commissi
 ## Requirements
 
 - WordPress 6.3+, PHP 8.1+, WooCommerce (store-side features only; affiliates work without it)
-- Composer 2, Node 18+
+- Composer 2, Node 18+, WP-CLI (for the translation template)
 
 ## Local development
 
@@ -36,6 +36,10 @@ npm install --include=dev
 npm run build        # wp-scripts → build/
 npm run build:tailwind
 npx tsc --noEmit     # typecheck
+
+# Translation template (PHP + block.json via wp-cli, React via extractor)
+wp i18n make-pot . languages/cosell-hive.pot --exclude=node_modules,vendor,plan,docs,tests,build
+node bin/extract-ts-strings.mjs >> languages/cosell-hive.pot
 ```
 
 `composer lint:fix` auto-fixes what PHPCS can. Keep every new string wrapped (`__()` / `esc_*()`), every input sanitized, every form nonce-checked, every query prepared — wp.org review depends on it.
@@ -50,7 +54,9 @@ npx tsc --noEmit     # typecheck
 
 - **WooCommerce** is required for store-side features only (publishing, order attribution). Affiliate feed, links, and wallet work without it.
 - **HPOS compatible** (`custom_order_tables` + `cart_checkout_blocks` declared). Product hooks used are HPOS-safe.
-- **Multisite:** activate per site — network activation only installs roles/tables on the main site. Tables and options are per-blog by design.
+- **Multisite:** activate per site — network-wide activation is not supported and shows a notice. Tables and options are per-blog by design.
+- **Roles:** `cs_hive_store` and `cs_hive_affiliate` (legacy `ch_*` roles migrate on upgrade).
+- **Uninstall:** a “Delete all CoSellHive data when the plugin is deleted” checkbox lives under CoSellHive > Settings (default off). With it off, uninstall only clears transients and cron events.
 - **Unique salts** in `wp-config.php` are mandatory for encrypted payout details; requests fail closed without them, and rotating salts orphans stored details (affiliates re-enter them).
 - **Screenshots** for the wp.org listing must be real UI captures added at release time (`readme.txt` deliberately ships no `== Screenshots ==` section until then).
 - **`languages/cosell-hive.pot`** regenerates with `wp i18n make-pot . languages/cosell-hive.pot`.
